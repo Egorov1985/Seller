@@ -81,10 +81,29 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public void updateProduct(Long id, Product productUpdate) {
+    public void updateProduct(Long id, Product productUpdate, MultipartFile file1, MultipartFile file2, MultipartFile file3) throws IOException {
+        Image image1;
+        Image image2;
+        Image image3;
+
+        if (file1.getSize()!=0){
+            image1 = toImageEntity(file1);
+            productUpdate.addImageToProduct(image1);
+        }
+
+        if (file2.getSize()!=0){
+            image2 = toImageEntity(file2);
+            productUpdate.addImageToProduct(image2);
+        }
+        if (file3.getSize()!=0) {
+            image3 = toImageEntity(file3);
+            productUpdate.addImageToProduct(image3);
+        }
+
+
        productUpdate.setId(id);
        productUpdate.setDateOfCreated(LocalDateTime.now());
-        log.info("Saving new Product. Title: {}; Author: {}",
+        log.info("Update  Product. Title: {}; Author: {}",
                 productUpdate.getTitle(), productUpdate.getAuthor());
        productRepository.save(productUpdate);
     }

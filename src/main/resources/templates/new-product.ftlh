@@ -12,9 +12,9 @@
 Цена: <input type="number" name="price" required /><br><br>
 Город: <input type="text" name="city" required/><br><br>
 Имя: <input type="text" name="author" required/><br><br>
-Первая фотография <input type="file" name="file1"/> <br><br>
-Вторая фотография <input type="file" name="file2"/> <br><br>
-Третья фотография <input type="file" name="file3"/> <br><br>
+Первая фотография <input type="file" name="file1" size="2000"/> <br><br>
+Вторая фотография <input type="file" name="file2" size="2000"/> <br><br>
+Третья фотография <input type="file" name="file3" size="2000"/> <br><br>
 <input type="submit" value="Добавить товар"/>
 
 </form>
