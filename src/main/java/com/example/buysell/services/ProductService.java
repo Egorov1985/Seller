@@ -33,33 +33,25 @@ public class ProductService {
     }
 
 
-    public void saveProduct(Product product, MultipartFile file1, MultipartFile file2,
-                            MultipartFile file3) throws IOException {
-      Image image1;
-      Image image2;
-      Image image3;
+    public void saveProduct(Product product, MultipartFile[] file) throws IOException {
+        if (file.length!=0){
+            int count = 0;
+            for (MultipartFile f: file){
+                product.addImageToProduct(toImageEntity(f));
+                if (count==0){
+                    product.getImages().get(0).setPreviewImage(true);
+                    product.setPreviewImageId(product.getImages().get(0).getId());
+                }
+                count++;
+            }
+        }
 
-      if (file1.getSize()!=0){
-          image1 = toImageEntity(file1);
-          image1.setPreviewImage(true);
-          product.addImageToProduct(image1);
-      }
-      if (file2.getSize()!=0){
-          image2 = toImageEntity(file2);
-          product.addImageToProduct(image2);
-      }
-      if (file3.getSize()!=0) {
-          image3 = toImageEntity(file3);
-          product.addImageToProduct(image3);
-      }
+        if (!product.getImages().isEmpty()) {
+            product.setPreviewImageId(product.getImages().get(0).getId());
+        }
 
         log.info("Saving new Product. Title: {}; Author: {}",
                 product.getTitle(), product.getAuthor());
-
-      if (!product.getImages().isEmpty() && product.getImages().get(0)!=null) {
-          Product productFromDb = productRepository.save(product);
-          product.setPreviewImageId(productFromDb.getImages().get(0).getId());
-      }
         productRepository.save(product);
     }
 
@@ -81,27 +73,9 @@ public class ProductService {
         return productRepository.findById(id).orElse(null);
     }
 
-    public void updateProduct(Long id, Product productUpdate, MultipartFile file1, MultipartFile file2, MultipartFile file3) throws IOException {
-        Image image1;
-        Image image2;
-        Image image3;
+    public void updateProduct(Long id, Product productUpdate, MultipartFile[] file) throws IOException {
 
-        if (file1.getSize()!=0){
-            image1 = toImageEntity(file1);
-            productUpdate.addImageToProduct(image1);
-        }
-
-        if (file2.getSize()!=0){
-            image2 = toImageEntity(file2);
-            productUpdate.addImageToProduct(image2);
-        }
-        if (file3.getSize()!=0) {
-            image3 = toImageEntity(file3);
-            productUpdate.addImageToProduct(image3);
-        }
-
-
-       productUpdate.setId(id);
+       productUpdate.setPreviewImageId(productUpdate.getPreviewImageId());
        productUpdate.setDateOfCreated(LocalDateTime.now());
         log.info("Update  Product. Title: {}; Author: {}",
                 productUpdate.getTitle(), productUpdate.getAuthor());

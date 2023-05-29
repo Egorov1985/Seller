@@ -12,9 +12,8 @@
     Цена: <input type="number" name="price" value="${product.price}"руб. min="0" required/><br><br>
     Город: <input type="text" name="city" value="${product.city}" required/><br><br>
     Имя: <input type="text" name="author" value="${product.author}" required /><br><br>
-    Первая фотография <input type="file" name="file1"/> <br><br>
-    Вторая фотография <input type="file" name="file2"/> <br><br>
-    Третья фотография <input type="file" name="file3"/> <br><br>
+    <p>:Добавьте фотографии вашего товара</p>
+    <p><input type="file" name="file" multiple accept="image/*,image/jpeg"> <br><br>
     <#list images as img>
         <img src="/images/${img.id}" height="150px" />
         <br><br>
