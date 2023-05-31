@@ -13,11 +13,13 @@
 <b> Цена: </b>${product.price} руб.<br>
 <b> Город: </b>${product.city}<br>
 <b> Имя: </b>${product.author}<br>
+
 <#list images as img>
-    <img src="/images/${img.id}" height="150px"/><br><br>
+    <img src="/images/${img.id}" alt="Фото+${img_index}" width="120" height="120"/>
 <#else >
     <h3> Фотографий нет </h3>
 </#list>
+<br>
 <a href="/product/${product.id}/product-edit" > Редактировать </a>
 
 <hr>

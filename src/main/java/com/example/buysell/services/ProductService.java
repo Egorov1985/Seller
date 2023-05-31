@@ -2,6 +2,7 @@ package com.example.buysell.services;
 
 import com.example.buysell.models.Image;
 import com.example.buysell.models.Product;
+import com.example.buysell.repositories.ImageRepository;
 import com.example.buysell.repositories.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ImageRepository imageRepository;
 
     public List<Product> listProducts(String title) {
         List<Product> productList = productRepository.findAll();
@@ -34,25 +36,62 @@ public class ProductService {
 
 
     public void saveProduct(Product product, MultipartFile[] file) throws IOException {
-        if (file.length!=0){
-            int count = 0;
-            for (MultipartFile f: file){
+
+        for (MultipartFile f: file){
+            if (f.getSize()!=0){
                 product.addImageToProduct(toImageEntity(f));
-                if (count==0){
-                    product.getImages().get(0).setPreviewImage(true);
-                    product.setPreviewImageId(product.getImages().get(0).getId());
-                }
-                count++;
             }
         }
 
-        if (!product.getImages().isEmpty()) {
-            product.setPreviewImageId(product.getImages().get(0).getId());
+        Product productFromDb = productRepository.save(product);
+        if (!productFromDb.getImages().isEmpty()) {
+            product.setPreviewImageId(productFromDb.getImages().get(0).getId());
         }
 
         log.info("Saving new Product. Title: {}; Author: {}",
                 product.getTitle(), product.getAuthor());
         productRepository.save(product);
+    }
+
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteById(id);
+    }
+    public Product getProductById(Long id) {
+        return productRepository.findById(id).orElse(null);
+    }
+
+    public void updateProduct(Long id, Product productUpdate, MultipartFile[] file) throws IOException {
+
+        System.out.println(productUpdate);
+
+        for (MultipartFile f: file){
+            if (f.getSize()!=0){
+                productUpdate.addImageToProduct(toImageEntity(f));
+            }
+        }
+        if (!getProductById(id).getImages().isEmpty()){
+            productUpdate.setPreviewImageId(getProductById(id).getImages().get(0).getId());
+        }
+
+        productUpdate.setDateOfCreated(LocalDateTime.now());
+        log.info("Update  Product. Title: {}; Author: {}",
+                productUpdate.getTitle(), productUpdate.getAuthor());
+       productRepository.save(productUpdate);
+    }
+
+    public void deleteImageProduct(Long id, Product productDeleteImage) {
+      // List <Long> integerList = new ArrayList<>();
+      //
+      // getProductById(id).getImages().forEach(image -> integerList.add(image.getId()));
+      // System.out.println(integerList);
+      // for (Long idImage: integerList){
+      //     System.out.println(idImage);
+      //     imageRepository.deleteById(idImage);
+      // }
+
+        System.out.println(id);
+        System.out.println(productDeleteImage);
     }
 
     private Image toImageEntity (MultipartFile file) throws IOException {
@@ -65,20 +104,6 @@ public class ProductService {
         return image;
     }
 
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
-    }
 
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElse(null);
-    }
 
-    public void updateProduct(Long id, Product productUpdate, MultipartFile[] file) throws IOException {
-
-       productUpdate.setPreviewImageId(productUpdate.getPreviewImageId());
-       productUpdate.setDateOfCreated(LocalDateTime.now());
-        log.info("Update  Product. Title: {}; Author: {}",
-                productUpdate.getTitle(), productUpdate.getAuthor());
-       productRepository.save(productUpdate);
-    }
 }

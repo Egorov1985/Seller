@@ -53,15 +53,22 @@ public class Product {
             "Введите свое имя, не менее 3 символов и не более 30 символов")
     private String author;
 
+    @Column (name = "previewImageId")
+    private Long previewImageId;
+
+    @Column (name = "dateOfCreated")
+    private LocalDateTime dateOfCreated;
+
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<Image> images = new ArrayList<>();
-    private Long previewImageId;
-    private LocalDateTime dateOfCreated;
 
     @PrePersist
     private void init(){
         dateOfCreated = LocalDateTime.now();
+        if (!images.isEmpty()){
+            images.get(0).setPreviewImage(true);
+        }
     }
 
     public void addImageToProduct(Image image){

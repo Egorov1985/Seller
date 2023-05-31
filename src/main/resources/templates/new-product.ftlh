@@ -12,7 +12,7 @@
 Цена: <input type="number" name="price" required /><br><br>
 Город: <input type="text" name="city" required/><br><br>
 Имя: <input type="text" name="author" required/><br><br>
-<p>:Добавьте фотографии вашего товара</p>
+<p>Добавьте фотографии вашего товара</p>
 <p><input type="file" name="file" multiple accept="image/*,image/jpeg"> <br><br>
 <input type="submit" value="Добавить товар"/>
 

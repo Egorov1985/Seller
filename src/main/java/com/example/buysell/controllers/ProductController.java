@@ -32,9 +32,9 @@ public class ProductController {
     }
 
     @PostMapping("/product/create")
-    public String createProduct(@RequestParam ("file") MultipartFile[] file,
-                                @Valid Product product, BindingResult result) throws IOException {
-        if (result.hasErrors())
+    public String createProduct(@RequestParam (value = "file") MultipartFile[] file ,
+                                @ModelAttribute @Valid Product product, BindingResult bindingResult) throws IOException {
+        if (bindingResult.hasErrors())
             return "new-product";
         productService.saveProduct(product, file);
         return "redirect:/";
@@ -42,7 +42,7 @@ public class ProductController {
 
     @PostMapping("/product/new")
     public String newProduct(@RequestParam (value = "file") MultipartFile[] file,
-                             @Valid Product product, BindingResult result) throws IOException {
+                             @ModelAttribute @Valid Product product, BindingResult result) throws IOException {
         if (result.hasErrors())
             return "new-product";
         productService.saveProduct(product, file);
@@ -66,18 +66,20 @@ public class ProductController {
 
     @PostMapping("/product/{id}/update")
     public String updateProduct(@RequestParam ("file") MultipartFile [] file,
-                                @ModelAttribute("product") @Valid Product product,
+                                @Valid Product product,
                                 BindingResult result, @PathVariable Long id) throws IOException {
         if (result.hasErrors()) {
-            System.out.println(result.toString());
             return "redirect:/product/{id}/product-edit";
         }
        productService.updateProduct(id, product, file);
        return "redirect:/product/{id}";
     }
 
-
-
+    @PostMapping ("/product/images/delete/{id}")
+    public String deleteImagesProduct(@PathVariable Long id, @ModelAttribute Product product){
+        productService.deleteImageProduct(id, product);
+        return "redirect:/product/{id}/product-edit";
+    }
 
 
 }
