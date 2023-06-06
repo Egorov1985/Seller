@@ -14,18 +14,29 @@
 <b> Описание товара: </b>${product.description}<br>
 <b> Цена: </b>${product.price} руб.<br>
 <b> Город: </b>${product.city}<br>
-<b> Имя: </b>${product.author}<br>
+<b> Имя: </b>${product.user.email}<br>
+<#if user.email??>
+    <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br>
+    <#list images as img>
+        <img src="/images/${img.id}"  height="120px"/>
+    <#else >
+        <h3> Фотографий нет </h3>
+    </#list>
+    <br>
 
-<#list images as img>
-    <img src="/images/${img.id}"  height="120px"/>
-<#else >
-    <h3> Фотографий нет </h3>
-</#list>
-<br>
-<a href="/product/${product.id}/product-edit" > Редактировать </a>
-<hr>
-<form action="/product/delete/${product.id}" method="post">
-    <input type="submit" value="Удалить товар"/>
-</form>
+    <#if user.id==productUserId>
+        <a href="/product/${product.id}/product-edit" > Редактировать </a>
+    </#if>
+    <hr>
+    <#else >
+        <b> Номер телефона: </b> Для просмотра номера телефона войти в аккаунт<br>
+        <#list images as img>
+            <img src="/images/${img.id}"  height="120px"/>
+        <#else >
+            <h3> Фотографий нет </h3>
+        </#list>
+        <br>
+        <a href="/login"> Войти в аккаунт</a>
+</#if>
 </body>
 </html>

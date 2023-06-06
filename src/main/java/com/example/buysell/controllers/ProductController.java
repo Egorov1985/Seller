@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -20,26 +21,31 @@ public class ProductController {
 
 
     @GetMapping("/")
-    public String products(@RequestParam(name = "title", required = false) String title, Model model) {
+    public String products(@RequestParam(name = "title", required = false
+            ) String title, Model model, Principal principal) {
         List<Product> productList = productService.listProducts(title);
         model.addAttribute("products", productList);
+        model.addAttribute("user", productService.getUserByPrincipal(principal));
         return "products";
     }
 
     @GetMapping("/product/{id}")
-    public String productInfo(@PathVariable Long id, Model model) {
+    public String productInfo(@PathVariable Long id, Model model, Principal principal) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("images", product.getImages());
+        model.addAttribute("productUserId", product.getUser().getId());
+        model.addAttribute("user", productService.getUserByPrincipal(principal));
         return "product-info";
     }
 
     @PostMapping ("/product/create")
     public String createProduct(@RequestParam (value = "file") MultipartFile[] file ,
-                                @ModelAttribute @Valid Product product, BindingResult bindingResult) throws IOException {
+                                @ModelAttribute @Valid Product product,
+                                BindingResult bindingResult, Principal principal) throws IOException {
         if (bindingResult.hasErrors())
             return "new-product";
-        productService.saveProduct(product, file);
+        productService.saveProduct(principal, product, file);
         return "redirect:/";
     }
 
@@ -55,10 +61,11 @@ public class ProductController {
     }
 
     @GetMapping("/product/{id}/product-edit")
-    public String editProduct(@PathVariable Long id, Model model){
+    public String editProduct(@PathVariable Long id, Model model, Principal principal){
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
         model.addAttribute("images", product.getImages());
+        model.addAttribute("user", productService.getUserByPrincipal(principal));
         return "product-edit";
     }
 

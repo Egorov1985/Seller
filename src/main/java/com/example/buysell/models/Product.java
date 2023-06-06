@@ -48,14 +48,13 @@ public class Product {
             "Введите город, не менее 3 символов и не более 30 символов")
     private String city;
 
-    @Column(name = "author")
-    @NotEmpty(message = "Введите свое имя")
-    @Size (min = 3, max = 30, message =
-            "Введите свое имя, не менее 3 символов и не более 30 символов")
-    private String author;
 
     @Column (name = "previewImageId")
     private Long previewImageId;
+
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
+    @JoinColumn
+    private User user;
 
     @Column (name = "dateOfCreated")
     private Date dateOfCreated;
@@ -63,6 +62,7 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<Image> images = new ArrayList<>();
+
 
     @PrePersist
     private void init(){
@@ -82,7 +82,7 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", city='" + city + '\'' +
-                ", author='" + author + '\'' +
+                ", author='" + user.getEmail() + '\'' +
                 ", previewImageId= " + previewImageId +
                 ", images.size=" + images.size()+
                 '}';
