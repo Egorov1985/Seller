@@ -1,17 +1,18 @@
 package com.example.buysell.models;
 
 import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -57,7 +58,7 @@ public class Product {
     private Long previewImageId;
 
     @Column (name = "dateOfCreated")
-    private LocalDateTime dateOfCreated;
+    private Date dateOfCreated;
 
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
@@ -65,14 +66,25 @@ public class Product {
 
     @PrePersist
     private void init(){
-        dateOfCreated = LocalDateTime.now();
-        if (!images.isEmpty()){
-            images.get(0).setPreviewImage(true);
-        }
+        dateOfCreated = new Date();
     }
 
     public void addImageToProduct(Image image){
         image.setProduct(this);
         images.add(image);
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", city='" + city + '\'' +
+                ", author='" + author + '\'' +
+                ", previewImageId= " + previewImageId +
+                ", images.size=" + images.size()+
+                '}';
     }
 }

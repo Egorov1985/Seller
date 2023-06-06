@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,6 +22,8 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ImageRepository imageRepository;
 
+
+    //Возвращаем весь список товаров, если задан ппоиск, то возвращает искомые товары
     public List<Product> listProducts(String title) {
         List<Product> productList = productRepository.findAll();
         if (title!=null){
@@ -34,66 +37,83 @@ public class ProductService {
        return productList;
     }
 
-
+    // Сохранение товара в Базу Данных
     public void saveProduct(Product product, MultipartFile[] file) throws IOException {
 
         for (MultipartFile f: file){
-            if (f.getSize()!=0){
-                product.addImageToProduct(toImageEntity(f));
+            if (f.getSize()!=0) {
+                try {
+                    Image image = toImageEntity(f);
+                    product.addImageToProduct(image);
+                    if (product.getImages().size() == 1) {
+                        product.getImages().get(0).setPreviewImage(true);
+                        productRepository.save(product);  // сохраняем в БД, чтобы можно было присвоить ID привьюшней фотографии
+                        imageRepository.save(image);  // сохраняем в БД, чтобы можно было присвоить ID привьюшней фотографии
+                    }
+                } catch (IOException e) {
+                    System.out.println("Ошибка загрузки фотографии " + new IOException(e));
+                }
             }
         }
-
-        Product productFromDb = productRepository.save(product);
-        if (!productFromDb.getImages().isEmpty()) {
-            product.setPreviewImageId(productFromDb.getImages().get(0).getId());
+        // Устанавливаем флажок на привьюшную фотографию
+        if (!product.getImages().isEmpty()){
+            product.setPreviewImageId(product.getImages().get(0).getId());
         }
 
-        log.info("Saving new Product. Title: {}; Author: {}",
+        log.info("Saving Product: Title: {}; Author: {}",
                 product.getTitle(), product.getAuthor());
+        product.setDateOfCreated(new Date());
         productRepository.save(product);
     }
 
-
+    //Удаление товара из базы
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
+    // Находим товар по ID и возвращаем его
     public Product getProductById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
-
-    public void updateProduct(Long id, Product productUpdate, MultipartFile[] file) throws IOException {
-
-        System.out.println(productUpdate);
-
+    //Редактирование товара
+    public void updateProduct(Long id, MultipartFile[] file) {
+        Product product = getProductById(id);
         for (MultipartFile f: file){
-            if (f.getSize()!=0){
-                productUpdate.addImageToProduct(toImageEntity(f));
+            if (f.getSize()!=0) {
+                try {
+                    Image image = toImageEntity(f);
+                    product.addImageToProduct(image);
+                    if (product.getImages().size() == 1) {
+                        product.getImages().get(0).setPreviewImage(true);
+                        imageRepository.save(image);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
-        if (!getProductById(id).getImages().isEmpty()){
-            productUpdate.setPreviewImageId(getProductById(id).getImages().get(0).getId());
+        log.info("Update Product: Title: {}; Author: {}",
+                product.getTitle(), product.getAuthor());
+        if (!product.getImages().isEmpty()){
+            product.setPreviewImageId(product.getImages().get(0).getId());
         }
-
-        productUpdate.setDateOfCreated(LocalDateTime.now());
-        log.info("Update  Product. Title: {}; Author: {}",
-                productUpdate.getTitle(), productUpdate.getAuthor());
-       productRepository.save(productUpdate);
+        product.setDateOfCreated(new Date());
+        productRepository.save(product);
+    }
+     //Удалем все фотографии товара
+    public void deleteImagesOfProduct(Long id){
+        Product product = getProductById(id);
+        List <Long> idImageDeleteOfProduct = new ArrayList<>();
+        if (!product.getImages().isEmpty()){
+            product.getImages().forEach(image -> idImageDeleteOfProduct.add(image.getId()));
+        }
+        product.setImages(null); // очищаем лист, чтобы не произошло объединение (в jpa вызывается метод "merge") при сохранении
+        product.setPreviewImageId(null);
+        for (Long idImage: idImageDeleteOfProduct){
+            imageRepository.deleteById(idImage);
+        }
     }
 
-    public void deleteImageProduct(Long id, Product productDeleteImage) {
-      // List <Long> integerList = new ArrayList<>();
-      //
-      // getProductById(id).getImages().forEach(image -> integerList.add(image.getId()));
-      // System.out.println(integerList);
-      // for (Long idImage: integerList){
-      //     System.out.println(idImage);
-      //     imageRepository.deleteById(idImage);
-      // }
-
-        System.out.println(id);
-        System.out.println(productDeleteImage);
-    }
-
+    //Преобразовыем файлы в изображения
     private Image toImageEntity (MultipartFile file) throws IOException {
         Image image = new Image();
         image.setName(file.getName());
@@ -103,7 +123,4 @@ public class ProductService {
         image.setBytes(file.getBytes());
         return image;
     }
-
-
-
 }

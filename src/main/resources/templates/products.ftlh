@@ -4,30 +4,28 @@
     <title>BUYSELL</title>
 </head>
 <body>
-<h1>BUYSELL </h1><hr>
+<h1>BUYSELL | <a href="/login"> Войти </a></h1>
+<hr>
 <h4>Товары со всей России</h4>
 <form action="/" method="get">
-    Поиск по названию объявления: <input type="text" name="title"><br>
-    <input type="submit" value="Поиск"/>
+    Поиск по названию объявления: <input type="text" name="title"><br><br>
+    <input type="submit" value="Поиск"/><br><br>
 </form>
-<#list products as product>
+<#list products as product >
     <div>
-        <p><b>${product.title}</b> ${product.price} руб. | <a href="/product/${product.id}">Подробнее...</a></p>
+        <#if product.previewImageId?has_content>
+            <p> <img src="/images/${product.previewImageId}" height="50px"/> ${product.title}  ${product.price} руб.
+                | <a href="/product/${product.id}">Подробнее...</a></p><br>
+            <#else >
+               <p>  <img src="/product/defaultImage" />  ${product.title}  ${product.price} руб.
+                | <a href="/product/${product.id}">Подробнее...</a></p><br>
+        </#if>
     </div>
-    <#else>
+<#else>
     <h3>Товаров нет </h3>
 </#list>
+
+<a href="/product/new"> Создать новое объявление </a>
 <hr>
-<h3>Создать новый товар</h3>
-<form action="/product/create" method="post" enctype="multipart/form-data">
-    Название объявления: <input type="text" name="title"/> <br><br>
-    Описание объявления: <input type="text" name="description"/><br><br>
-    Цена: <input type="number" name="price"/><br><br>
-    Город: <input type="text" name="city"/><br><br>
-    Имя: <input type="text" name="author"/><br><br>
-    <p>Загрузите фотографии вашего товара</p>
-    <p><input type="file" name="file" multiple accept="image/*,image/jpeg"> <br><br>
-    <input type="submit" value="Добавить товар"/>
-</form>
 </body>
 </html>

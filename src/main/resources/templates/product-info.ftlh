@@ -4,8 +4,10 @@
     <title>BUYSELL</title>
 </head>
 <body>
-<h1> BUYSELL </h1><hr>
+<h1> BUYSELL </h1>
 <a href="http://localhost:8080"> Вернуться на главную страницу </a>
+<hr>
+
 <h4> Подробная информация о товаре </h4>
 
 <b> Название товара: </b>${product.title}<br>
@@ -15,13 +17,12 @@
 <b> Имя: </b>${product.author}<br>
 
 <#list images as img>
-    <img src="/images/${img.id}" alt="Фото+${img_index}" width="120" height="120"/>
+    <img src="/images/${img.id}"  height="120px"/>
 <#else >
     <h3> Фотографий нет </h3>
 </#list>
 <br>
 <a href="/product/${product.id}/product-edit" > Редактировать </a>
-
 <hr>
 <form action="/product/delete/${product.id}" method="post">
     <input type="submit" value="Удалить товар"/>
