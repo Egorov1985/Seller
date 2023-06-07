@@ -14,7 +14,7 @@
 <b> Описание товара: </b>${product.description}<br>
 <b> Цена: </b>${product.price} руб.<br>
 <b> Город: </b>${product.city}<br>
-<b> Имя: </b>${product.user.email}<br>
+<b> Имя: </b> <a href="/user/${product.user.id}"> ${product.getUser().name} </a> <br>
 <#if user.email??>
     <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br>
     <#list images as img>
