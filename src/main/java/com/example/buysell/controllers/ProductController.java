@@ -71,9 +71,9 @@ public class ProductController {
 
 
     @PostMapping("/product/{id}/update")
-    public String updateProduct(@RequestParam ("file") MultipartFile [] file,
-                                @PathVariable Long id) throws IOException {
-       productService.updateProduct(id, file);
+    public String updateProduct(@RequestParam ("file") MultipartFile [] file, @ModelAttribute @Valid Product product,
+                                @PathVariable Long id, Principal principal) throws IOException {
+       productService.updateProduct(product, id, file, principal);
        return "redirect:/product/{id}";
     }
 

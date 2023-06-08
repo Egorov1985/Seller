@@ -30,7 +30,7 @@
             <th>
                 <form action="/admin/user/ban/${user.id}" method="post">
                     <input type="hidden" name="_csrf" value="${_csrf.token}">
-                    <input type="submit" value="Бан">
+                    <input type="submit" value="Active/Deactivated ban">
                 </form>
             </th>
             <th><a href="/admin/user/edit/${user.id}">Редактировние</a></th>

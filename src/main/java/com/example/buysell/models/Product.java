@@ -82,9 +82,10 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", city='" + city + '\'' +
-                ", author='" + user.getEmail() + '\'' +
-                ", previewImageId= " + previewImageId +
-                ", images.size=" + images.size()+
+                ", previewImageId=" + previewImageId +
+                ", user=" + user.getEmail() +
+                ", dateOfCreated=" + dateOfCreated +
+                ", images=" + images.size() +
                 '}';
     }
 }

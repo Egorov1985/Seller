@@ -55,6 +55,10 @@ public class User implements UserDetails {
         dateOfCreated = new Date();
     }
 
+    public boolean isAdmin(){
+        return roles.contains(Role.ROLE_ADMIN);
+    }
+
     //security
 
     @Override

@@ -89,14 +89,14 @@ public class ProductService {
 
 
     //Редактирование товара
-    public void updateProduct(Long id, MultipartFile[] file) {
-        Product product = getProductById(id);
+    public void updateProduct(Product product, Long id, MultipartFile[] file, Principal principal) {
+        product.setUser(getUserByPrincipal(principal));
         for (MultipartFile f: file){
             if (f.getSize()!=0) {
                 try {
                     Image image = toImageEntity(f);
                     product.addImageToProduct(image);
-                    if (product.getImages().size() == 1) {
+                    if (product.getImages().size() == 1 && getProductById(id).getImages().isEmpty()) {
                         product.getImages().get(0).setPreviewImage(true);
                         imageRepository.save(image);
                     }
@@ -108,7 +108,7 @@ public class ProductService {
         log.info("Update Product: Title: {}; Author email: {}",
                 product.getTitle(), product.getUser().getEmail());
         if (!product.getImages().isEmpty()){
-            product.setPreviewImageId(product.getImages().get(0).getId());
+            product.setPreviewImageId(getProductById(id).getImages().get(0).getId());
         }
         product.setDateOfCreated(new Date());
         productRepository.save(product);
