@@ -14,7 +14,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.ServletException;
@@ -34,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
 
                 .authorizeRequests()
-                .antMatchers("/",
+                .antMatchers("/login",
                         "/product/**",
                         "/registration",
                         "/images/**",
@@ -47,15 +46,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .formLogin()
                         .loginPage("/login")
                         .defaultSuccessUrl("/product")// страница на которую перенаправляет после успешного входа
-                        .failureUrl("/")
+                        .failureUrl("/login")
                         .permitAll()
                 .and()
                         .exceptionHandling()
                         .authenticationEntryPoint(getAuthenticationEntryPoint())
                 .and()
                        .logout()
-                       .logoutSuccessUrl("/?logout")
-                       .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                       //.logoutSuccessUrl("/logout")
+                      // .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                        .permitAll();
 
     }
@@ -63,7 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationEntryPoint getAuthenticationEntryPoint(){
         return new AuthenticationEntryPoint() {
             @Override
-            public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+            public void commence(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 AuthenticationException authException) throws IOException, ServletException {
                 response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.toString());
             }
         };

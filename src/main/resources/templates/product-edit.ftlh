@@ -17,12 +17,13 @@
         <img src="/images/${img.id}" height="120px"/>
     <#else >
         <h3> Фотографий товара нет </h3>
+
     </#list>
     <br>
-    <br>
-    <p>Добавьте фотографии вашего товара</p>
-    <p><input type="file" name="file" multiple accept="image/*,image/jpeg"></p> <br>
-    <input type="hidden" name="_csrf" value="${_csrf.token}">
+    <p>Добавить фотографии товара</p>
+    <p><input type="file" name="file" multiple accept="image/*,image/jpeg"/></p> <br>
+
+    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <input type="submit" value="Сохранить изменения"/>
 </form>
 <br><br>

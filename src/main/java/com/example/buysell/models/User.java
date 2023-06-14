@@ -1,12 +1,16 @@
 package com.example.buysell.models;
 
+import com.example.buysell.Annotation.Phone;
 import com.example.buysell.models.enums.Role;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
@@ -20,12 +24,18 @@ public class User implements UserDetails {
 
     @Email
     @Column (name = "email", unique = true)
+    @NotEmpty (message = "Введите корректный email")
     private String email;
 
     @Column (name = "phone_Number")
+    @Phone(message = "Введите корректный номер телефона")
+    @NotEmpty(message = "Введите корректный номер телефона")
     private String phoneNumber;
 
     @Column (name = "name")
+    @NotEmpty(message = "Имя не может быть пустым")
+    @Size(min = 2, max = 30, message =
+            "Введите ваше имя, не менее 2 символов и не более 30 символов")
     private String name;
 
     @Column (name = "active")
@@ -36,6 +46,7 @@ public class User implements UserDetails {
     private Image avatar;
 
     @Column(name = "password", length = 1000)
+    @NotEmpty(message = "Пароль не может быть пустым")
     private String password;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

@@ -26,7 +26,7 @@ public class Admin implements CommandLineRunner {
         admin.setPassword(passwordEncoder.encode("admin"));
         admin.setEmail("admin@admin.com");
         admin.setName("admin");
-        admin.setPhoneNumber("not found");
+        admin.setPhoneNumber("8-495-555-05-35");
         userRepository.save(admin);
     }
 }

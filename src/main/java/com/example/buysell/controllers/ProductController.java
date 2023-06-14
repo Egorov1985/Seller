@@ -63,7 +63,6 @@ public class ProductController {
 
     @GetMapping("/{id}/product-edit")
     public String editProduct(@PathVariable Long id, Model model, Principal principal){
-        System.out.println(principal.getName());
         if (principal.getName().equals(productService.getProductById(id).getUser().getEmail())) {
             Product product = productService.getProductById(id);
             model.addAttribute("product", product);
@@ -77,7 +76,7 @@ public class ProductController {
 
 
     @PostMapping("/{id}/update")
-    public String updateProduct(@RequestParam ("file") MultipartFile [] file, @ModelAttribute @Valid Product product,
+    public String updateProduct(@RequestParam (value = "file", required = false) MultipartFile [] file , @ModelAttribute @Valid Product product,
                                 @PathVariable Long id, Principal principal) throws IOException {
        productService.updateProduct(product, id, file, principal);
        return "redirect:/product/{id}";
