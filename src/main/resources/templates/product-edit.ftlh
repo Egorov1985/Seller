@@ -19,15 +19,17 @@
         <h3> Фотографий товара нет </h3>
     </#list>
     <br>
-    <button>
-        <a href="/product/images/delete/${product.id}"> Удалить все фотографии товара </a>
-        <input type="hidden" name="_csrf" value="${_csrf.token}">
-    </button>
     <br>
     <p>Добавьте фотографии вашего товара</p>
-    <p><input type="file" name="file" multiple accept="image/*,image/jpeg"></p> <br><br>
+    <p><input type="file" name="file" multiple accept="image/*,image/jpeg"></p> <br>
     <input type="hidden" name="_csrf" value="${_csrf.token}">
     <input type="submit" value="Сохранить изменения"/>
+</form>
+<br><br>
+
+<form action="/product/images/delete/${id}" method="post">
+    <input type="hidden" name="_csrf" value="${_csrf.token}">
+    <input type="submit" value="Удалить все фотографии товара">
 </form>
 <#else >
 <a href="/login"> Войти <a/>

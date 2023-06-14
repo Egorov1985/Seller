@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1> BUYSELL </h1>
-<a href="http://localhost:8080"> Вернуться на главную страницу </a>
+<a href="http://localhost:8080/product"> Вернуться на главную страницу </a>
 <hr>
 
 <h4> Подробная информация о товаре </h4>
@@ -24,8 +24,6 @@
         <h3> Фотографий нет </h3>
     </#list>
     <br>
-    <br>
-
     <#if user.id==productUserId>
         <a href="/product/${product.id}/product-edit"> Редактировать </a>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>

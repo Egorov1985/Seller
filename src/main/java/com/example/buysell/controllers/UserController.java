@@ -19,7 +19,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/login")
+    @GetMapping()
     public String login(){
         return "login";
     }
@@ -29,14 +29,14 @@ public class UserController {
         return "registration";
     }
 
-    @PostMapping("registration")
+    @PostMapping("/registration")
     public String createUser(User user, Model model){
         if (!userService.createUser(user)) {
             model.addAttribute("errorMessage",
                     "Пользователь с email: " + user.getEmail() + " уже существует");
             return "registration";
         }
-        return "redirect:/login";
+        return "redirect:/";
     }
 
     @GetMapping("hello")
@@ -51,7 +51,4 @@ public class UserController {
         model.addAttribute("products", user.getProducts());
         return "user-info";
     }
-
-
-
 }

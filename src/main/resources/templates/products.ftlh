@@ -13,6 +13,7 @@
                <input type="submit" value="Выйти">
            </form>
           <#if user.isAdmin()>
+              <br>
               <a href="/admin"> Панель администратора</a>
           </#if>
      <#else >
@@ -20,7 +21,7 @@
      </#if>
     <hr>
     <h4>Товары со всей России</h4>
-    <form action="/" method="get">
+    <form action="/product" method="get">
         Поиск по названию объявления: <input type="text" name="title"><br><br>
         <input type="submit" value="Поиск"/><br><br>
     </form>

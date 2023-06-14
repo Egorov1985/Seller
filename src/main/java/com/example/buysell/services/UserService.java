@@ -5,7 +5,6 @@ import com.example.buysell.models.enums.Role;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +42,9 @@ public class UserService  {
     public void banUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user!=null){
-            if (user.isActive()){
+            if (user.getName().equals("admin"))
+                return;
+            else if (user.isActive()){
                 user.setActive(false);
                 log.info("Activated Ban user with id = {}; email = {}", user.getId(), user.getEmail());
             } else {
@@ -60,6 +61,7 @@ public class UserService  {
                 .collect(Collectors.toSet());
         user.getRoles().clear();
         for (String key: form.keySet()){
+            System.out.println(key);
             if (roles.contains(key)){
                 user.getRoles().add(Role.valueOf(key));
             }

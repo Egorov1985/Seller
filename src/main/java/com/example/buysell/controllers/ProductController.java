@@ -16,11 +16,12 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/product")
 public class ProductController {
     private final ProductService productService;
 
 
-    @GetMapping("/")
+    @GetMapping
     public String products(@RequestParam(name = "title", required = false
             ) String title, Model model, Principal principal) {
         List<Product> productList = productService.listProducts(title);
@@ -29,7 +30,7 @@ public class ProductController {
         return "products";
     }
 
-    @GetMapping("/product/{id}")
+    @GetMapping("/{id}")
     public String productInfo(@PathVariable Long id, Model model, Principal principal) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
@@ -39,38 +40,43 @@ public class ProductController {
         return "product-info";
     }
 
-    @PostMapping ("/product/create")
+    @PostMapping ("/create")
     public String createProduct(@RequestParam (value = "file") MultipartFile[] file ,
                                 @ModelAttribute @Valid Product product,
                                 BindingResult bindingResult, Principal principal) throws IOException {
         if (bindingResult.hasErrors())
             return "new-product";
         productService.saveProduct(principal, product, file);
-        return "redirect:/";
+        return "redirect:/product";
     }
 
-    @GetMapping("/product/new")
+    @GetMapping("/new")
     public String newProduct() throws IOException {
         return "new-product";
     }
 
-    @PostMapping("/product/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return "redirect:/";
+        return "redirect:/product";
     }
 
-    @GetMapping("/product/{id}/product-edit")
+    @GetMapping("/{id}/product-edit")
     public String editProduct(@PathVariable Long id, Model model, Principal principal){
-        Product product = productService.getProductById(id);
-        model.addAttribute("product", product);
-        model.addAttribute("images", product.getImages());
-        model.addAttribute("user", productService.getUserByPrincipal(principal));
-        return "product-edit";
+        System.out.println(principal.getName());
+        if (principal.getName().equals(productService.getProductById(id).getUser().getEmail())) {
+            Product product = productService.getProductById(id);
+            model.addAttribute("product", product);
+            model.addAttribute("images", product.getImages());
+            model.addAttribute("user", productService.getUserByPrincipal(principal));
+            return "product-edit";
+        } else {
+            return "redirect:/product/{id}";
+        }
     }
 
 
-    @PostMapping("/product/{id}/update")
+    @PostMapping("/{id}/update")
     public String updateProduct(@RequestParam ("file") MultipartFile [] file, @ModelAttribute @Valid Product product,
                                 @PathVariable Long id, Principal principal) throws IOException {
        productService.updateProduct(product, id, file, principal);
@@ -78,7 +84,7 @@ public class ProductController {
     }
 
 
-    @GetMapping ("/product/images/delete/{id}")
+    @PostMapping ("/images/delete/{id}")
     public String deleteImagesProduct(@PathVariable Long id){
         productService.deleteImagesOfProduct(id);
         return "redirect:/product/{id}";
