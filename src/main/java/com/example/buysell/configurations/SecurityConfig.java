@@ -33,11 +33,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
 
                 .authorizeRequests()
-                .antMatchers("/login",
+                .antMatchers("/",
+                        "/login",
                         "/product/**",
                         "/registration",
                         "/images/**",
-                        "/user/**")
+                        "/user/**",
+                        "/css/public/**")
                 .permitAll()
                         .antMatchers("/admin/**")
                         .hasAuthority("ROLE_ADMIN")

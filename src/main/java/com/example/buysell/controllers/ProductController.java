@@ -20,7 +20,6 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-
     @GetMapping
     public String products(@RequestParam(name = "title", required = false
             ) String title, Model model, Principal principal) {

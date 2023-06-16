@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>BUYSELL</title>
+    <meta charset="UTF-8">
+    <title>ByuSell</title>
 </head>
 <body>
 <h1>BUYSELL</h1><hr>

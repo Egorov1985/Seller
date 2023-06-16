@@ -3,7 +3,6 @@ package com.example.buysell.models;
 import com.example.buysell.Annotation.Phone;
 import com.example.buysell.models.enums.Role;
 import lombok.Data;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -33,9 +32,7 @@ public class User implements UserDetails {
     private String phoneNumber;
 
     @Column (name = "name")
-    @NotEmpty(message = "Имя не может быть пустым")
-    @Size(min = 2, max = 30, message =
-            "Введите ваше имя, не менее 2 символов и не более 30 символов")
+    @Size(min = 2, max = 30, message = "Имя не может быть пустым, не менее 2 символов и не более 30 символов")
     private String name;
 
     @Column (name = "active")
