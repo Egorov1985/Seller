@@ -17,7 +17,11 @@
 
 <#if user.email??>
     <b> Имя: </b> <a href="/user/${product.user.id}"> ${product.getUser().name} </a> <br>
-    <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br>
+    <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br><br>
+    <button>
+        <a href="/product/${product.id}/message">Написать продавцу</a>
+    </button>
+    <br><br>
     <#list images as img>
         <img src="/images/${img.id}" height="120px"/>
     <#else >

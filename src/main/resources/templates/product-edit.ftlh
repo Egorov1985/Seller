@@ -22,7 +22,6 @@
     <br>
     <p>Добавить фотографии товара</p>
     <p><input type="file" name="file" multiple accept="image/*,image/jpeg"/></p> <br>
-
     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <input type="submit" value="Сохранить изменения"/>
 </form>

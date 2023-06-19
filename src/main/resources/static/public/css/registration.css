@@ -1,6 +1,7 @@
 body * {
-    background-color: aqua;
+    font-weight: 400;
 }
+
 form b {
     color: red;
 }

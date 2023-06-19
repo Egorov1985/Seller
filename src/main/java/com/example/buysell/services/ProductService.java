@@ -42,7 +42,8 @@ public class ProductService {
     }
 
     // Сохранение товара в Базу Данных
-    public void saveProduct(Principal principal, Product product, MultipartFile[] file) throws IOException {
+    public void saveProduct(Principal principal, Product product,
+                            MultipartFile[] file) throws IOException {
         product.setUser(getUserByPrincipal(principal));
         for (MultipartFile f: file){
             if (f.getSize()!=0) {

@@ -88,4 +88,10 @@ public class ProductController {
         return "redirect:/product/{id}";
     }
 
+    @GetMapping("/{id}/message")
+    public String message(@PathVariable Long id, Product product, Model model){
+        model.addAttribute("product", productService.getProductById(id));
+        return "message";
+    }
+
 }

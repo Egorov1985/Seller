@@ -5,13 +5,12 @@
 <head>
     <meta charset="UTF-8">
     <title>ByuSell</title>
-    <link rel="stylesheet" href="/css/public/registration.css">
+    <link rel="stylesheet" href="/public/css/registration.css">
 </head>
 <body>
 <h1>BuySell</h1><hr>
 <h4>Регистрация</h4>
 <form action="/registration" method="post">
-
         Имя пользователя :<br>
         <@spring.formInput "user.name"/>
         <@spring.showErrors "<br>"/>
@@ -28,14 +27,11 @@
         <@spring.formInput "user.password"/>
         <@spring.showErrors "<br>"/>
         <br><br>
-    <#--Эл. почта: <input type="email" name="email" ><br><br>
-    Номер телефона: <input type="text" name="phoneNumber" ><br><br>
-    Пароль: <input type="password" name="password" ><br><br>-->
         <input type="hidden" name="_csrf" value="${_csrf.token}">
         <input type="submit" value="Зарегистрироваться">
 
 </form>
-<script src="/js/main.js"></script>
+<script src="/public/js/registration.js"></script>
 <#if errorMessage??>
     <h2 style="color: red">${errorMessage}</h2>
 </#if>
