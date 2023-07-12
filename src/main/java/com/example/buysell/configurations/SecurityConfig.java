@@ -52,12 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .failureUrl("/login")
                         .permitAll()
                 .and()
-                        .exceptionHandling()
-                        .authenticationEntryPoint(getAuthenticationEntryPoint())
+                      .rememberMe()
                 .and()
                        .logout()
-                       //.logoutSuccessUrl("/logout")
-                      // .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                        .permitAll();
 
     }
