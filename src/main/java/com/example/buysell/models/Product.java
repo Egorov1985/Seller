@@ -1,6 +1,6 @@
 package com.example.buysell.models;
 
-import com.sun.istack.NotNull;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -56,7 +56,7 @@ public class Product {
     @Column (name = "dateOfCreated")
     private Date dateOfCreated;
 
-
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "product")
     private List<Image> images = new ArrayList<>();
 

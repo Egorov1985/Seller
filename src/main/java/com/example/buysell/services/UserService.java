@@ -1,10 +1,12 @@
 package com.example.buysell.services;
 
+import com.example.buysell.exception.UserBanException;
 import com.example.buysell.models.User;
 import com.example.buysell.models.enums.Role;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,18 @@ import java.util.stream.Collectors;
 public class UserService  {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+
+
+    public User findById(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> {
+            return new UsernameNotFoundException("User not found");
+        });
+        if (!user.isActive()){
+            throw new UserBanException("User with email " + user.getEmail() + " is banned");
+        }
+        return user;
+    }
 
     public boolean createUser(User user){
         String email = user.getEmail();
@@ -42,7 +56,7 @@ public class UserService  {
     public void banUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user!=null){
-            if (user.getName().equals("admin"))
+            if (user.getRoles().contains("ROLE_ADMIN"))
                 return;
             else if (user.isActive()){
                 user.setActive(false);

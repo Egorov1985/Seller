@@ -1,13 +1,12 @@
 package com.example.buysell.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+
 
 import javax.persistence.*;
-import java.util.Arrays;
-
 @Entity
 @Table(name = "images")
 @Data
@@ -37,7 +36,7 @@ public class Image {
     @Lob
     private byte [] bytes;
 
-
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Product product;
     @Override

@@ -1,6 +1,7 @@
 package com.example.buysell.services;
 
 
+import com.example.buysell.models.User;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -15,7 +17,18 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email);
+        User user = userRepository.findByEmail(email);
+        if (user==null) {
+            log.error("User with email: {} not found", email);
+            throw new UsernameNotFoundException("User with email " + email + " not found");
+        }
+        if (!user.isAccountNonLocked()){
+            log.error("User with email: {} is banned", email);
+        } else {
+            log.info("Load by username with email: {}", email);
+        }
+        return user;
     }
 }

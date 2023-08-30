@@ -20,7 +20,7 @@ import java.util.List;
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping
+    @GetMapping("/products")
     public String products(@RequestParam(name = "title", required = false
             ) String title, Model model, Principal principal) {
         List<Product> productList = productService.listProducts(title);
@@ -93,5 +93,4 @@ public class ProductController {
         model.addAttribute("product", productService.getProductById(id));
         return "message";
     }
-
 }

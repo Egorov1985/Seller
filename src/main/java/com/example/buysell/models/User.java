@@ -2,6 +2,7 @@ package com.example.buysell.models;
 
 import com.example.buysell.Annotation.Phone;
 import com.example.buysell.models.enums.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,7 +29,6 @@ public class User implements UserDetails {
 
     @Column (name = "phone_Number")
     @Phone(message = "Введите корректный номер телефона")
-    @NotEmpty(message = "Введите корректный номер телефона")
     private String phoneNumber;
 
     @Column (name = "name")
@@ -51,8 +51,8 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set <Role> roles = new HashSet<>();
 
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Product> products = new ArrayList<>();
 
     @Column(name = "dateOfCreated")
@@ -86,7 +86,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return isActive();
     }
 
     @Override
@@ -96,6 +96,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return active;
+        return true;
     }
 }
