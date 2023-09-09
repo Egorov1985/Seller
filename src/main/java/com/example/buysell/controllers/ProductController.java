@@ -33,7 +33,7 @@ public class ProductController {
     public String productInfo(@PathVariable Long id, Model model, Principal principal) {
         Product product = productService.getProductById(id);
         model.addAttribute("product", product);
-        model.addAttribute("images", product.getImages());
+        model.addAttribute("images", product.getImagesPathList());
         model.addAttribute("productUserId", product.getUser().getId());
         model.addAttribute("user", productService.getUserByPrincipal(principal));
         return "product-info";
@@ -46,7 +46,7 @@ public class ProductController {
         if (bindingResult.hasErrors())
             return "new-product";
         productService.saveProduct(principal, product, file);
-        return "redirect:/product";
+        return "redirect:/product/products";
     }
 
     @GetMapping("/new")
@@ -57,7 +57,7 @@ public class ProductController {
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return "redirect:/product";
+        return "redirect:/product/products";
     }
 
     @GetMapping("/{id}/product-edit")
@@ -65,7 +65,7 @@ public class ProductController {
         if (principal.getName().equals(productService.getProductById(id).getUser().getEmail())) {
             Product product = productService.getProductById(id);
             model.addAttribute("product", product);
-            model.addAttribute("images", product.getImages());
+            model.addAttribute("images", product.getImagesPathList());
             model.addAttribute("user", productService.getUserByPrincipal(principal));
             return "product-edit";
         } else {
@@ -77,20 +77,15 @@ public class ProductController {
     @PostMapping("/{id}/update")
     public String updateProduct(@RequestParam (value = "file", required = false) MultipartFile [] file , @ModelAttribute @Valid Product product,
                                 @PathVariable Long id, Principal principal) throws IOException {
-       productService.updateProduct(product, id, file, principal);
+       productService.updateProduct(id, principal, product, file);
        return "redirect:/product/{id}";
     }
 
 
-    @PostMapping ("/images/delete/{id}")
-    public String deleteImagesProduct(@PathVariable Long id){
-        productService.deleteImagesOfProduct(id);
-        return "redirect:/product/{id}";
+    @PostMapping ("{product}/images/delete")
+    public String deleteImagesProduct(@PathVariable Product product){
+        productService.deleteImagesOfProduct(product);
+        return "redirect:/product/{product}";
     }
 
-    @GetMapping("/{id}/message")
-    public String message(@PathVariable Long id, Product product, Model model){
-        model.addAttribute("product", productService.getProductById(id));
-        return "message";
-    }
 }

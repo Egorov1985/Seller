@@ -5,7 +5,7 @@
 </head>
 <body>
 <h1> BUYSELL </h1>
-<a href="http://localhost:8080/product"> Вернуться на главную страницу </a>
+<a href="http://localhost:8080/product/products"> Вернуться на главную страницу </a>
 <hr>
 
 <h4> Подробная информация о товаре </h4>
@@ -15,17 +15,16 @@
 <b> Цена: </b>${product.price} руб.<br>
 <b> Город: </b>${product.city}<br>
 
+<h2> Загрузка файлов</h2>
+
+
 <#if user.email??>
     <b> Имя: </b> <a href="/user/${product.user.id}"> ${product.getUser().name} </a> <br>
     <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br><br>
 
-    <button >
-        <a href="/product/${product.id}/message">Написать продавцу</a>
-    </button>
-
     <br><br>
     <#list images as img>
-        <img src="/images/${img.id}" height="120px"/>
+        <img src="/product/${product.id}/image/${img_index}" height="120px"/>
     <#else >
         <h3> Фотографий нет </h3>
     </#list>

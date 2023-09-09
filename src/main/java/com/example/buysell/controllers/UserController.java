@@ -4,7 +4,6 @@ package com.example.buysell.controllers;
 import com.example.buysell.models.User;
 import com.example.buysell.services.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,10 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.security.Principal;
 
 
 @Controller
@@ -24,8 +21,6 @@ import java.security.Principal;
 public class UserController {
 
     private final UserService userService;
-    private Model model;
-    private String username;
 
     @GetMapping
     public String main() {
@@ -33,17 +28,18 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(Model model) {
+    public String login(HttpServletRequest request, Model model) {
+        String errorLoginMessage = userService.userLoginFailed(request);
+        model.addAttribute("errorLoginMessage", errorLoginMessage);
         model.addAttribute("user", new User());
         return "login";
     }
 
     @GetMapping("/login-error")
-    public String errorSighIn(Model model){
+    public String errorSighIn(Model model) {
         model.addAttribute("errorSighIn", "Неверный логин или пароль");
         return "login";
     }
-
 
 
     @GetMapping("/registration")
@@ -65,12 +61,6 @@ public class UserController {
         }
         return "redirect:/login";
     }
-
-    @GetMapping("hello")
-    public String securityUrl() {
-        return "hello";
-    }
-
 
     @GetMapping("/user/{id}")
     public String userInfo(@PathVariable("id") Long id, Model model) {

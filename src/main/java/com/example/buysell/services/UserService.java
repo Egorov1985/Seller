@@ -1,15 +1,22 @@
 package com.example.buysell.services;
 
-import com.example.buysell.exception.UserBanException;
+import com.example.buysell.exception.userException.UserActiveBannedException;
 import com.example.buysell.models.User;
 import com.example.buysell.models.enums.Role;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRequest;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +37,7 @@ public class UserService  {
             return new UsernameNotFoundException("User not found");
         });
         if (!user.isActive()){
-            throw new UserBanException("User with email " + user.getEmail() + " is banned");
+            throw new UserActiveBannedException("User with email " + user.getEmail() + " is banned");
         }
         return user;
     }
@@ -56,7 +63,7 @@ public class UserService  {
     public void banUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user!=null){
-            if (user.getRoles().contains("ROLE_ADMIN"))
+            if (user.getRoles().contains(Role.ROLE_ADMIN))
                 return;
             else if (user.isActive()){
                 user.setActive(false);
@@ -81,5 +88,23 @@ public class UserService  {
             }
         }
         userRepository.save(user);
+    }
+
+    public String userLoginFailed(HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if (session!=null) {
+            AuthenticationException authenticationException = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+            if (authenticationException!=null){
+                if (authenticationException instanceof BadCredentialsException) {
+                    session.invalidate();
+                    return "Неверный логин или пароль";
+                }
+                if (authenticationException instanceof LockedException) {
+                    session.invalidate();
+                    return "Пользователь заблокирован, обратитесь к администрации сайта";
+                }
+            }
+        }
+        return "Введите логин и пароль";
     }
 }

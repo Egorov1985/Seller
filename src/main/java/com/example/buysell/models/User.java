@@ -14,7 +14,7 @@ import javax.validation.constraints.Size;
 import java.util.*;
 
 @Entity
-@Table
+@Table(name = "user")
 @Data
 public class User implements UserDetails {
     @Id
@@ -37,10 +37,6 @@ public class User implements UserDetails {
 
     @Column (name = "active")
     private boolean active;
-
-    @OneToOne (cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn (name = "image_id")
-    private Image avatar;
 
     @Column(name = "password", length = 1000)
     @NotEmpty(message = "Пароль не может быть пустым")

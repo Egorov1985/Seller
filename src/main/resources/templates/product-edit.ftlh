@@ -14,7 +14,7 @@
     Цена: <input type="number" name="price" value="${product.price}" required/><br><br>
     Город: <input type="text" name="city" value="${product.city}" required/><br><br>
     <#list images as img>
-        <img src="/images/${img.id}" height="120px"/>
+        <img src="/product/${product.id}/image/${img_index}" height="120px"/>
     <#else >
         <h3> Фотографий товара нет </h3>
 
@@ -27,7 +27,7 @@
 </form>
 <br><br>
 
-<form action="/product/images/delete/${id}" method="post">
+<form action="/product/${product.id}/images/delete" method="post">
     <input type="hidden" name="_csrf" value="${_csrf.token}">
     <input type="submit" value="Удалить все фотографии товара">
 </form>
