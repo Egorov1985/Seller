@@ -1,11 +1,13 @@
 package com.example.buysell.services;
 
+import com.example.buysell.exception.productException.ProductNotFoundException;
 import com.example.buysell.models.Product;
 import com.example.buysell.models.User;
 import com.example.buysell.repositories.ProductRepository;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,16 +15,12 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -54,7 +52,7 @@ public class ProductService {
         List<String> pathToImage = new ArrayList<>();
 
         Path path = Paths.get("C:" + File.separator + "photo" + File.separator
-                + principal.getName() + File.separator + product.getTitle()+ UUID.randomUUID());
+                + principal.getName() + File.separator + product.getTitle() + "-" + UUID.randomUUID());
         File imageFile = null;
         for (MultipartFile f : file) {
             try {
@@ -62,7 +60,7 @@ public class ProductService {
                     image = ImageIO.read(f.getInputStream());
                     imageFile = new File(path + File.separator + f.getOriginalFilename().substring(0,
                             f.getOriginalFilename().lastIndexOf('.')) + ".png");
-                    if (!imageFile.getParentFile().exists()){
+                    if (!imageFile.getParentFile().exists()) {
                         Files.createDirectories(path);
                     }
                     ImageIO.write(image, "png", imageFile);
@@ -73,8 +71,8 @@ public class ProductService {
             }
         }
         product.setImagesPathList(pathToImage);
-        if (!pathToImage.isEmpty()){
-            try(FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
+        if (!pathToImage.isEmpty()) {
+            try (FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
                 product.setPreviewImage(fileInputStream.readAllBytes());
             }
         }
@@ -99,7 +97,10 @@ public class ProductService {
 
     // Находим товар по ID и возвращаем его
     public Product getProductById(Long id) {
-        return productRepository.findById(id).orElse(null);
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isEmpty())
+            throw new ProductNotFoundException("Product not found");
+        return product.get();
     }
 
 
@@ -110,31 +111,42 @@ public class ProductService {
         product.setUser(getUserByPrincipal(principal));
         List<String> pathToImage = productFromDB.getImagesPathList();
         product.setImagesPathList(pathToImage);
-        Path path = Paths.get("C:" + File.separator + "photo" + File.separator
-                + principal.getName() + File.separator + product.getTitle()+ UUID.randomUUID());
-        File imageFile = null;
-        BufferedImage image = null;
-        for (MultipartFile f : file) {
-            try {
-                if (f.getSize() > 0) {
-                    image = ImageIO.read(f.getInputStream());
-                    imageFile = new File(path + File.separator + f.getOriginalFilename().substring(0,
-                            f.getOriginalFilename().lastIndexOf('.')) + ".png");
-                    if (!imageFile.getParentFile().exists()){
-                        Files.createDirectories(path);
-                    }
-                    ImageIO.write(image, "png", imageFile);
-                    pathToImage.add(imageFile.getAbsolutePath());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+
+
+        if (file[0].getSize() > 0) {
+            Path path = null;
+            File imageFile = null;
+            BufferedImage image = null;
+            if (pathToImage.isEmpty()) {
+                path = Paths.get("C:" + File.separator + "photo" + File.separator
+                        + principal.getName() + File.separator + product.getTitle() +
+                        "-" + UUID.randomUUID());
+            } else {
+                path = Path.of(new File(pathToImage.get(0)).getParent());
             }
+
+            for (MultipartFile f : file) {
+                try {
+                    if (f.getSize() > 0) {
+                        image = ImageIO.read(f.getInputStream());
+                        imageFile = new File(path + File.separator + f.getOriginalFilename().substring(0,
+                                f.getOriginalFilename().lastIndexOf('.')) + ".png");
+                        if (!imageFile.getParentFile().exists()) {
+                            Files.createDirectories(path);
+                        }
+                        ImageIO.write(image, "png", imageFile);
+                        pathToImage.add(imageFile.getAbsolutePath());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            System.gc();
         }
-        System.gc();
-        if (product.getPreviewImage()==null && !pathToImage.isEmpty()){
-           try (FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
-               product.setPreviewImage(fileInputStream.readAllBytes());
-           }
+        if (product.getPreviewImage() == null && !pathToImage.isEmpty()) {
+            try (FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
+                product.setPreviewImage(fileInputStream.readAllBytes());
+            }
         }
         log.info("Update Product: Title: {}; Author email: {}",
                 product.getTitle(), product.getUser().getEmail());
@@ -144,9 +156,11 @@ public class ProductService {
 
 
     //Удалем все фотографии товара
-    public void deleteImagesOfProduct(Product product) {
+    public void deleteImagesOfProduct(Product product) throws IOException {
+        FileUtils.deleteDirectory(new File(product.getImagesPathList().get(0)).getParentFile());
         product.getImagesPathList().clear();
         product.setPreviewImage(null);
+
     }
 
 }

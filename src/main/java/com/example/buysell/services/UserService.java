@@ -17,10 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,13 +30,13 @@ public class UserService  {
 
 
     public User findById(Long id){
-        User user = userRepository.findById(id).orElseThrow(() -> {
-            return new UsernameNotFoundException("User not found");
-        });
-        if (!user.isActive()){
-            throw new UserActiveBannedException("User with email " + user.getEmail() + " is banned");
+        Optional <User> user = userRepository.findById(id);
+        if (user.isEmpty())
+            throw new UsernameNotFoundException("User not found");
+        if (!user.get().isActive()){
+            throw new UserActiveBannedException("User with email " + user.get().getEmail() + " is banned");
         }
-        return user;
+        return user.get();
     }
 
     public boolean createUser(User user){

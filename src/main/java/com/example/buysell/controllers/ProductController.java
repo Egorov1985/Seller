@@ -83,7 +83,7 @@ public class ProductController {
 
 
     @PostMapping ("{product}/images/delete")
-    public String deleteImagesProduct(@PathVariable Product product){
+    public String deleteImagesProduct(@PathVariable Product product) throws IOException {
         productService.deleteImagesOfProduct(product);
         return "redirect:/product/{product}";
     }

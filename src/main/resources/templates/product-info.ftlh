@@ -15,9 +15,6 @@
 <b> Цена: </b>${product.price} руб.<br>
 <b> Город: </b>${product.city}<br>
 
-<h2> Загрузка файлов</h2>
-
-
 <#if user.email??>
     <b> Имя: </b> <a href="/user/${product.user.id}"> ${product.getUser().name} </a> <br>
     <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br><br>
@@ -44,7 +41,7 @@
 <#else >
     <b> Номер телефона: </b> Для просмотра контакта войти в аккаунт<br>
     <#list images as img>
-        <img src="/images/${img.id}" height="120px"/>
+        <img src="/product/${product.id}/image/${img_index}" height="120px"/>
     <#else >
         <h3> Фотографий нет </h3>
     </#list>
