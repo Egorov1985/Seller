@@ -6,8 +6,8 @@
 <body>
 <a href="http://localhost:8080/product/products"> Вернуться на главную страницу </a>
 <h1>BUYSELL</h1><hr>
-<h3> Подробная информация о пользователе ${user.name}</h3>
-<b>Номер телефона </b> ${user.getPhoneNumber()} <br>
+<h3> Подробная информация о пользователе ${user.name}:</h3>
+<b> Пользователь зарегистрирован с ${user.getDateOfCreated()}  </b>
 
 <h4>Товары пользователя: </h4>
 <#list products as product>

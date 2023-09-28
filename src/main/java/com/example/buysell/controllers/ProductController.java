@@ -1,5 +1,6 @@
 package com.example.buysell.controllers;
 
+import com.example.buysell.exception.productException.ProductNotFoundException;
 import com.example.buysell.models.Product;
 import com.example.buysell.services.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public String products(@RequestParam(name = "title", required = false
-            ) String title, Model model, Principal principal) {
+    ) String title, Model model, Principal principal) {
         List<Product> productList = productService.listProducts(title);
         model.addAttribute("products", productList);
         model.addAttribute("user", productService.getUserByPrincipal(principal));
@@ -31,16 +32,21 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public String productInfo(@PathVariable Long id, Model model, Principal principal) {
-        Product product = productService.getProductById(id);
-        model.addAttribute("product", product);
-        model.addAttribute("images", product.getImagesPathList());
-        model.addAttribute("productUserId", product.getUser().getId());
-        model.addAttribute("user", productService.getUserByPrincipal(principal));
-        return "product-info";
+        try {
+            Product product = productService.getProductById(id);
+            model.addAttribute("product", product);
+            model.addAttribute("images", product.getImagesPathList());
+            model.addAttribute("productUserId", product.getUser().getId());
+            model.addAttribute("user", productService.getUserByPrincipal(principal));
+            return "product-info";
+        } catch (ProductNotFoundException exception) {
+            model.addAttribute("productException", exception.getMessage());
+            return "product-info";
+        }
     }
 
-    @PostMapping ("/create")
-    public String createProduct(@RequestParam (value = "file") MultipartFile[] file ,
+    @PostMapping("/create")
+    public String createProduct(@RequestParam(value = "file") MultipartFile[] file,
                                 @ModelAttribute @Valid Product product,
                                 BindingResult bindingResult, Principal principal) throws IOException {
         if (bindingResult.hasErrors())
@@ -61,7 +67,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}/product-edit")
-    public String editProduct(@PathVariable Long id, Model model, Principal principal){
+    public String editProduct(@PathVariable Long id, Model model, Principal principal) {
         if (principal.getName().equals(productService.getProductById(id).getUser().getEmail())) {
             Product product = productService.getProductById(id);
             model.addAttribute("product", product);
@@ -75,14 +81,14 @@ public class ProductController {
 
 
     @PostMapping("/{id}/update")
-    public String updateProduct(@RequestParam (value = "file", required = false) MultipartFile [] file , @ModelAttribute @Valid Product product,
+    public String updateProduct(@RequestParam(value = "file", required = false) MultipartFile[] file, @ModelAttribute @Valid Product product,
                                 @PathVariable Long id, Principal principal) throws IOException {
-       productService.updateProduct(id, principal, product, file);
-       return "redirect:/product/{id}";
+        productService.updateProduct(id, principal, product, file);
+        return "redirect:/product/{id}";
     }
 
 
-    @PostMapping ("{product}/images/delete")
+    @PostMapping("{product}/images/delete")
     public String deleteImagesProduct(@PathVariable Product product) throws IOException {
         productService.deleteImagesOfProduct(product);
         return "redirect:/product/{product}";
