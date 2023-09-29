@@ -160,7 +160,6 @@ public class ProductService {
         FileUtils.deleteDirectory(new File(product.getImagesPathList().get(0)).getParentFile());
         product.getImagesPathList().clear();
         product.setPreviewImage(null);
-
     }
 
 }

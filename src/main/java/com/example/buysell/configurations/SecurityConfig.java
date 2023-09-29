@@ -55,7 +55,8 @@ public class SecurityConfig {
                         "/public/css/**",
                         "/public/js/**",
                         "/product/**",
-                        "/user/**").permitAll()
+                        "/user/**",
+                        "/activate/*").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin(form -> form.loginPage("/login")

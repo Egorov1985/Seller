@@ -1,6 +1,7 @@
 package com.example.buysell.services;
 
 
+import com.example.buysell.exception.userException.UserActiveBannedException;
 import com.example.buysell.models.User;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
+
     private final UserRepository userRepository;
     @Override
     @Transactional
@@ -26,6 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
         if (!user.isAccountNonLocked()){
             log.info("User with email: {} is banned", email);
+            throw new UserActiveBannedException("User with email: " + email + "is banned");
         } else {
             log.info("Load by username with email: {}", email);
         }

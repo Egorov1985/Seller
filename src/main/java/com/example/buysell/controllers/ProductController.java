@@ -38,11 +38,10 @@ public class ProductController {
             model.addAttribute("images", product.getImagesPathList());
             model.addAttribute("productUserId", product.getUser().getId());
             model.addAttribute("user", productService.getUserByPrincipal(principal));
-            return "product-info";
         } catch (ProductNotFoundException exception) {
             model.addAttribute("productException", exception.getMessage());
-            return "product-info";
         }
+        return "product-info";
     }
 
     @PostMapping("/create")

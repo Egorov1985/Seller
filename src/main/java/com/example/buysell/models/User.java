@@ -54,6 +54,9 @@ public class User implements UserDetails {
     @Column(name = "dateOfCreated")
     private Date dateOfCreated;
 
+    @Column (name = "activateCode")
+    private String activateCode;
+
     @PrePersist
     private void init(){
         dateOfCreated = new Date();

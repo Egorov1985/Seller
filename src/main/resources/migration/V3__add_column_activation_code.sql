@@ -1,0 +1,1 @@
+ALTER TABLE USER ADD COLUMN activate_code varchar (255);

@@ -8,7 +8,7 @@
 <a href="http://localhost:8080/product/products"> Вернуться на главную страницу </a>
 <hr>
 <#if productException??>
-    <b>Упс... ${productException}</b>
+    <b>Omg... ${productException}</b>
     <#else >
         <h4> Подробная информация о товаре </h4>
 

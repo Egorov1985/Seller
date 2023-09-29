@@ -1,6 +1,7 @@
 package com.example.buysell.controllers;
 
 
+import com.example.buysell.exception.userException.UserNotFoundException;
 import com.example.buysell.models.User;
 import com.example.buysell.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +49,20 @@ public class UserController {
         return "registration";
     }
 
+    @GetMapping("/activate/{code}")
+    public String activate (Model model, @PathVariable String code){
+        boolean isActivated = userService.activateUser(code);
+        if (isActivated){
+            model.addAttribute("messageActivatedCode",
+                    "User successfully activated");
+        } else {
+            model.addAttribute("messageActivatedCode",
+                    "Activation code is not found");
+        }
+
+        return "login";
+    }
+
     @PostMapping("/registration")
     public String createUser(@ModelAttribute("user") @Valid User user,
                              BindingResult bindingResult, Model model) {
@@ -64,9 +79,13 @@ public class UserController {
 
     @GetMapping("/user/{id}")
     public String userInfo(@PathVariable("id") Long id, Model model) {
-        User user = userService.findById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("products", user.getProducts());
+        try {
+            User user = userService.findById(id);
+            model.addAttribute("user", user);
+            model.addAttribute("products", user.getProducts());
+        } catch (UserNotFoundException exception){
+            model.addAttribute("userException", exception.getMessage());
+        }
         return "user-info";
     }
 
