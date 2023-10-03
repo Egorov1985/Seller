@@ -1,12 +1,10 @@
 package com.example.buysell.configurations;
 
+import com.example.buysell.component.CustomAuthenticationFailureHandler;
 import com.example.buysell.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -23,7 +21,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
-
+    private final CustomAuthenticationFailureHandler failureHandler;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(8);
@@ -45,10 +43,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.
-                authorizeRequests()
+        http
+                .authorizeRequests()
                 .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/login" ,
+                .antMatchers("/login",
                         "/login-error",
                         "/registration",
                         "/images/**",
@@ -61,9 +59,8 @@ public class SecurityConfig {
                 .and()
                 .formLogin(form -> form.loginPage("/login")
                         .defaultSuccessUrl("/product/products")
-                        .failureHandler((request, response, exception) -> {
-                            response.sendError(HttpStatus.UNAUTHORIZED.value());
-                        }).failureUrl("/login"))
+                        .failureUrl("/login")
+                        .failureHandler(failureHandler))
                 .logout().logoutSuccessUrl("/login?logout").permitAll()
                 .and().rememberMe();
 

@@ -24,52 +24,51 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserService  {
+public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailSender mailSender;
 
 
-
-    public User findById(Long id){
-        Optional <User> user = userRepository.findById(id);
+    public User findById(Long id) {
+        Optional<User> user = userRepository.findById(id);
         if (user.isEmpty())
-            throw  new UserNotFoundException("User not found or banned");
+            throw new UserNotFoundException("User not found or banned");
         return user.get();
     }
-@Transactional
-    public boolean createUser(User user){
+
+    @Transactional
+    public boolean createUser(User user) {
         String email = user.getEmail();
-        if (userRepository.findByEmail(email) != null){
+        if (userRepository.findByEmail(email) != null) {
             return false;
         }
-        user.setActive(true);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setActivateCode(UUID.randomUUID().toString());
         user.getRoles().add(Role.ROLE_USER);
         userRepository.save(user);
 
-        if (!StringUtils.isEmpty(user.getEmail())){
+        if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format("Hello, %s \n" + "Welcome to Buysell. " +
-                    "Please, visit next link http://localhost:8080/active/%s",
-                    user.getName(), user.getActivateCode() );
+                            "Please, visit next link http://localhost:8080/activate/%s",
+                    user.getName(), user.getActivateCode());
             mailSender.send(user.getEmail(), "Activation code", message);
         }
         log.info("Saving new User with email: {}", email);
         return true;
     }
 
-    public List<User> listUser(){
+    public List<User> listUser() {
         return userRepository.findAll();
     }
 
 
     public void banUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
-        if (user!=null){
+        if (user != null) {
             if (user.getRoles().contains(Role.ROLE_ADMIN))
                 return;
-            else if (user.isActive()){
+            else if (user.isActive()) {
                 user.setActive(false);
                 log.info("Activated Ban user with id = {}; email = {}", user.getId(), user.getEmail());
             } else {
@@ -82,23 +81,23 @@ public class UserService  {
 
 
     public void changeUserRoles(User user, Map<String, String> form) {
-        Set <String> roles = Arrays.stream(Role.values()).map(Role::name)
+        Set<String> roles = Arrays.stream(Role.values()).map(Role::name)
                 .collect(Collectors.toSet());
         user.getRoles().clear();
-        for (String key: form.keySet()){
+        for (String key : form.keySet()) {
             System.out.println(key);
-            if (roles.contains(key)){
+            if (roles.contains(key)) {
                 user.getRoles().add(Role.valueOf(key));
             }
         }
         userRepository.save(user);
     }
 
-    public String userLoginFailed(HttpServletRequest request){
+    public String userLoginFailed(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session!=null) {
+        if (session != null) {
             AuthenticationException authenticationException = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-            if (authenticationException!=null){
+            if (authenticationException != null) {
                 if (authenticationException instanceof BadCredentialsException) {
                     return "Неверный логин или пароль";
                 }
@@ -112,9 +111,10 @@ public class UserService  {
 
     public boolean activateUser(String code) {
         User user = userRepository.findByActivateCode(code);
-        if (user==null)
+        if (user == null)
             return false;
         user.setActivateCode(null);
+        user.setActive(true);
         userRepository.save(user);
         return true;
     }

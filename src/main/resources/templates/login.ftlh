@@ -8,10 +8,11 @@
 <body>
 <h1>BUYSELL</h1><hr>
 <h4>Авторизация</h4>
-
-<#if errorLoginMessage??>
-    <h4 style="color: red"> ${errorLoginMessage}</h4>
+<div <#if errorActivation??>
+  <b style="color: red">${errorActivation}</b>
+    <br><br>
 </#if>
+</div>
 <form action="/login" method="post">
     Эл. почта: <input type="email" name="username" placeholder="Введите ваш почтовый адрес" required><br><br>
     Пароль: <input type="password" name="password" placeholder="Введите пароль от аккаунта" required><br><br>

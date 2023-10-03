@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -29,11 +26,10 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(HttpServletRequest request, Model model) {
-        String errorLoginMessage = userService.userLoginFailed(request);
-        model.addAttribute("errorLoginMessage", errorLoginMessage);
-        model.addAttribute("user", new User());
-        return "login";
+    public String login(@RequestParam(value = "error", required = false) boolean error, Model model) {
+        if (error)
+            model.addAttribute("errorActivation", "Account not activation");
+        return "/login";
     }
 
     @GetMapping("/login-error")

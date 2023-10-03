@@ -23,14 +23,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email);
         if (user==null) {
-            log.info("User with email: {} not found", email);
-            throw new UsernameNotFoundException("User with email " + email + " not found");
+            log.info("User with email: {} not found.", email);
+            throw new UsernameNotFoundException("User with email " + email + " not found.");
         }
-        if (!user.isAccountNonLocked()){
-            log.info("User with email: {} is banned", email);
-            throw new UserActiveBannedException("User with email: " + email + "is banned");
+        if (!user.isActive()){
+            log.info("User with email: {} is not activated.", email);
         } else {
-            log.info("Load by username with email: {}", email);
+            log.info("Load by username with email: {}.", email);
         }
         return user;
     }
