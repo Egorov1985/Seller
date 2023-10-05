@@ -1,6 +1,8 @@
 package com.example.buysell.configurations;
 
-import com.example.buysell.component.CustomAuthenticationFailureHandler;
+import com.example.buysell.authentication.CustomAuthenticationEntryPoint;
+import com.example.buysell.authentication.CustomAuthenticationFailureHandler;
+import com.example.buysell.authentication.CustomAuthenticationSuccessHandler;
 import com.example.buysell.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,13 +24,16 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final CustomAuthenticationFailureHandler failureHandler;
+    private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(8);
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    public AuthenticationManager authenticationManager
+            (AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -46,6 +51,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/user/profile").authenticated()
                 .antMatchers("/login",
                         "/login-error",
                         "/registration",
@@ -60,7 +66,10 @@ public class SecurityConfig {
                 .formLogin(form -> form.loginPage("/login")
                         .defaultSuccessUrl("/product/products")
                         .failureUrl("/login")
-                        .failureHandler(failureHandler))
+                        .failureHandler(failureHandler)
+                        .successHandler(successHandler))
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)
+                .and()
                 .logout().logoutSuccessUrl("/login?logout").permitAll()
                 .and().rememberMe();
 

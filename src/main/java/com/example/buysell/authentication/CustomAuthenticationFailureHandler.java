@@ -1,6 +1,5 @@
-package com.example.buysell.component;
+package com.example.buysell.authentication;
 
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -17,11 +16,12 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
-        System.out.println("Login fail!!!");
+
         super.onAuthenticationFailure(request, response, exception);
 
         if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
-            setDefaultFailureUrl("/login?error=true");
+            setDefaultFailureUrl("/login?error_account_not_activated=true&&username=" +
+                    request.getParameter("username"));
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION,
                     exception.getMessage());
         }

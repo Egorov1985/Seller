@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.security.Principal;
 
 
 @Controller
@@ -26,9 +27,12 @@ public class UserController {
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) boolean error, Model model) {
+    public String login(@RequestParam(value = "error_account_not_activated",
+            required = false) boolean error, @RequestParam(value = "username", required = false) String username,
+                        Model model) {
         if (error)
-            model.addAttribute("errorActivation", "Account not activation");
+            model.addAttribute("errorActivation",
+                    "The account with email " +username +" is not activated");
         return "/login";
     }
 
@@ -85,5 +89,10 @@ public class UserController {
         return "user-info";
     }
 
+    @GetMapping("/user/profile")
+    public String profile(Principal principal, Model model){
+        model.addAttribute("user", principal.getName());
+        return "/profile";
+    }
 
 }
