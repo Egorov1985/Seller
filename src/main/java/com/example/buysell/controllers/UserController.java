@@ -59,7 +59,6 @@ public class UserController {
             model.addAttribute("messageActivatedCode",
                     "Activation code is not found");
         }
-
         return "login";
     }
 

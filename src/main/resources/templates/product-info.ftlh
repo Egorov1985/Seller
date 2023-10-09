@@ -42,7 +42,7 @@
             <hr>
 
         <#else >
-            <b> Номер телефона: </b> Для просмотра контакта войти в аккаунт<br>
+            <b> Номер телефона: </b> Для просмотра скрытой информации <a href="/login">зайдите в аккаунт</a><br>
             <#list images as img>
                 <img src="/product/${product.id}/image/${img_index}" height="120px"/>
             <#else >
@@ -50,7 +50,6 @@
             </#list>
             <br>
             <hr>
-            <a href="/login"> Войти в аккаунт</a>
         </#if>
 </#if>
 

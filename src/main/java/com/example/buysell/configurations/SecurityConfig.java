@@ -64,8 +64,6 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin(form -> form.loginPage("/login")
-                        .defaultSuccessUrl("/product/products")
-                        .failureUrl("/login")
                         .failureHandler(failureHandler)
                         .successHandler(successHandler))
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint)

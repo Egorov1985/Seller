@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.Principal;
@@ -30,14 +31,24 @@ public class ProductController {
         return "products";
     }
 
+  /*  @GetMapping("/sighIn")
+    public String sighIn(HttpServletRequest request){
+        System.out.println(request.getRequestURI());
+        return "/login";
+    }*/
+
+
     @GetMapping("/{id}")
-    public String productInfo(@PathVariable Long id, Model model, Principal principal) {
+    public String productInfo(@PathVariable Long id, Model model, Principal principal,
+                              HttpServletRequest request) {
         try {
             Product product = productService.getProductById(id);
             model.addAttribute("product", product);
             model.addAttribute("images", product.getImagesPathList());
             model.addAttribute("productUserId", product.getUser().getId());
             model.addAttribute("user", productService.getUserByPrincipal(principal));
+            if (principal == null)
+                request.getSession(true).setAttribute("SESSION_REDIRECT_URL", request.getRequestURI());
         } catch (ProductNotFoundException exception) {
             model.addAttribute("productException", exception.getMessage());
         }

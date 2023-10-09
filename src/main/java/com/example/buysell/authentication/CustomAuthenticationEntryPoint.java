@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Component
@@ -16,9 +17,11 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-        String redirectUrl = request.getRequestURI();
-
-        request.getSession().setAttribute("SESSION_REDIRECT_URL", redirectUrl);
-        response.sendRedirect("/login");
+        HttpSession session = request.getSession();
+        if (session != null) {
+            String redirectUrl = request.getRequestURI();
+            request.getSession().setAttribute("SESSION_REDIRECT_URL", redirectUrl);
+            response.sendRedirect("/login");
+        }
     }
 }

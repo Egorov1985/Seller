@@ -17,10 +17,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
+
         HttpSession session = request.getSession();
         String redirectUrl = (String) session.getAttribute("SESSION_REDIRECT_URL");
 
-        if (redirectUrl==null){
+        if (redirectUrl==null || redirectUrl.startsWith("/error")){
             for (GrantedAuthority authority: authentication.getAuthorities()) {
                 if (authority.equals(Role.ROLE_ADMIN))
                     redirectUrl = "/admin";
