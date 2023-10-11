@@ -3,10 +3,8 @@
 <head>
     <title>BUYSELL</title>
 </head>
-<a href="http://localhost:8080/product/products"> Вернуться на главную страницу </a>
 <body>
-<h1>BUYSELL</h1>
-<hr>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
 <h4>Панель администратора</h4>
 <table border="1">
     <tr>

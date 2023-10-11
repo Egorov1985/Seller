@@ -4,8 +4,7 @@
     <title>BUYSELL</title>
 </head>
 <body>
-<a href="http://localhost:8080/product/products"> Вернуться на главную страницу </a>
-<h1>BUYSELL</h1><hr>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
 <#if userException??>
     <b>Omg... ${userException}</b>
     <#else >
@@ -16,10 +15,10 @@
         <#list products as product>
             <#if product.previewImage??>
                 <p><img src="/product/${product.id}/previewImage" height="50px"/> ${product.title}  ${product.price} руб.
-                    | <a href="/product/${product.id}">Подробнее...</a></p><br>
+                    | <a href="/products/${product.id}">Подробнее...</a></p><br>
             <#else >
                 <p><img src="/product/defaultImage"/> ${product.title}  ${product.price} руб.
-                    | <a href="/product/${product.id}">Подробнее...</a></p><br>
+                    | <a href="/products/${product.id}">Подробнее...</a></p><br>
             </#if>
         <#else >
             <b> ${user.name} пока ничего не продает </b>

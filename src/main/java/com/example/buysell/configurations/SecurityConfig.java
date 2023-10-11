@@ -53,14 +53,14 @@ public class SecurityConfig {
                 .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/user/profile").authenticated()
                 .antMatchers("/login",
-                        "/login-error",
                         "/registration",
                         "/images/**",
                         "/public/css/**",
                         "/public/js/**",
-                        "/product/**",
+                        "/products/**",
                         "/user/**",
-                        "/activate/*").permitAll()
+                        "/activate/*",
+                        "/").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin(form -> form.loginPage("/login")

@@ -4,9 +4,7 @@
     <title>BUYSELL</title>
 </head>
 <body>
-<h1> BUYSELL </h1>
-
-<hr>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
 <h4> Редактирование пользователя ${user.name}</h4>
 <form action="/admin/user/edit" method="post">
     <#list roles as role>

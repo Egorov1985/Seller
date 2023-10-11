@@ -18,25 +18,18 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
 
-    @GetMapping("/products")
-    public String products(@RequestParam(name = "title", required = false
+    @GetMapping()
+    public String filterProducts(@RequestParam(name = "title", required = false
     ) String title, Model model, Principal principal) {
-        List<Product> productList = productService.listProducts(title);
+        List<Product> productList = productService.filteredProductList(title);
         model.addAttribute("products", productList);
         model.addAttribute("user", productService.getUserByPrincipal(principal));
         return "products";
     }
-
-  /*  @GetMapping("/sighIn")
-    public String sighIn(HttpServletRequest request){
-        System.out.println(request.getRequestURI());
-        return "/login";
-    }*/
-
 
     @GetMapping("/{id}")
     public String productInfo(@PathVariable Long id, Model model, Principal principal,
@@ -62,7 +55,7 @@ public class ProductController {
         if (bindingResult.hasErrors())
             return "new-product";
         productService.saveProduct(principal, product, file);
-        return "redirect:/product/products";
+        return "redirect:/";
     }
 
     @GetMapping("/new")
@@ -73,7 +66,7 @@ public class ProductController {
     @PostMapping("/delete/{id}")
     public String deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
-        return "redirect:/product/products";
+        return "redirect:/";
     }
 
     @GetMapping("/{id}/product-edit")
@@ -85,7 +78,7 @@ public class ProductController {
             model.addAttribute("user", productService.getUserByPrincipal(principal));
             return "product-edit";
         } else {
-            return "redirect:/product/{id}";
+            return "redirect:/products/{id}";
         }
     }
 
@@ -94,14 +87,14 @@ public class ProductController {
     public String updateProduct(@RequestParam(value = "file", required = false) MultipartFile[] file, @ModelAttribute @Valid Product product,
                                 @PathVariable Long id, Principal principal) throws IOException {
         productService.updateProduct(id, principal, product, file);
-        return "redirect:/product/{id}";
+        return "redirect:/products/{id}";
     }
 
 
     @PostMapping("{product}/images/delete")
     public String deleteImagesProduct(@PathVariable Product product) throws IOException {
         productService.deleteImagesOfProduct(product);
-        return "redirect:/product/{product}";
+        return "redirect:/products/{product}";
     }
 
 }

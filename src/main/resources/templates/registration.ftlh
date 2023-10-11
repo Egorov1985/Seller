@@ -6,8 +6,7 @@
     <link href="/public/css/registration.css" rel="stylesheet">
 </head>
 <body>
-<a href="http://localhost:8080/product/products"> Вернуться на главную страницу </a>
-<h1>BUYSELL</h1><hr>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
 <h4>Регистрация</h4>
 <form action="/registration" method="post">
 

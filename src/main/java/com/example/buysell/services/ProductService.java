@@ -29,9 +29,13 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
+    public List<Product> allProduct(){
+        return productRepository.findAll();
+    }
 
-    //Возвращаем весь список товаров, если задан ппоиск, то возвращает искомые товары
-    public List<Product> listProducts(String title) {
+
+    //Возвращаем весь список товаров, если задан поиск, то возвращает искомые товары
+    public List<Product> filteredProductList(String title) {
         List<Product> productList = productRepository.findAll();
         if (title != null) {
             List<Product> listSearch = new ArrayList<>();

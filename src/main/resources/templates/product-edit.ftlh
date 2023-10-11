@@ -4,11 +4,10 @@
     <title>BUYSELL</title>
 </head>
 <body>
-<h1> BUYSELL </h1>
-<hr>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
 <h4> Редактирование информация о товаре </h4>
 <#if user.email??>
-<form action="/product/${product.id}/update" method="post" enctype="multipart/form-data">
+<form action="/products/${product.id}/update" method="post" enctype="multipart/form-data">
     Название объявления: <input type="text" name="title" value="${product.title}" required/> <br><br>
     Описание объявления: <input type="text" name="description" value="${product.description}" required/><br><br>
     Цена: <input type="number" name="price" value="${product.price}" required/><br><br>
@@ -27,7 +26,7 @@
 </form>
 <br><br>
 
-<form action="/product/${product.id}/images/delete" method="post">
+<form action="/products/${product.id}/images/delete" method="post">
     <input type="hidden" name="_csrf" value="${_csrf.token}">
     <input type="submit" value="Удалить все фотографии товара">
 </form>

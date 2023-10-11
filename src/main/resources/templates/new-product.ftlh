@@ -3,12 +3,9 @@
 <head>
     <title>BUYSELL</title>
 </head>
-<body>
-<h1> BUYSELL </h1>
-
-<hr>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
 <h4> Создание нового товара </h4>
-<form action="/product/create" method="post" enctype="multipart/form-data">
+<form action="/products/create" method="post" enctype="multipart/form-data">
     Название объявления: <input type="text" name="title" required/> <br><br>
     Описание объявления: <input type="text" name="description" required/><br><br>
     Цена: <input type="number" name="price" required/><br><br>
@@ -19,5 +16,6 @@
     <input type="submit" value="Добавить товар"/>
 
 </form>
-</body>
+
+<body></body>
 </html>

@@ -21,11 +21,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    public String main() {
-        return "redirect:/login";
-    }
-
     @GetMapping("/login")
     public String login(@RequestParam(value = "error_account_not_activated",
             required = false) boolean error, @RequestParam(value = "username", required = false) String username,
@@ -36,30 +31,10 @@ public class UserController {
         return "/login";
     }
 
-    @GetMapping("/login-error")
-    public String errorSighIn(Model model) {
-        model.addAttribute("errorSighIn", "Неверный логин или пароль");
-        return "login";
-    }
-
-
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("user", new User());
         return "registration";
-    }
-
-    @GetMapping("/activate/{code}")
-    public String activate (Model model, @PathVariable String code){
-        boolean isActivated = userService.activateUser(code);
-        if (isActivated){
-            model.addAttribute("messageActivatedCode",
-                    "User successfully activated");
-        } else {
-            model.addAttribute("messageActivatedCode",
-                    "Activation code is not found");
-        }
-        return "login";
     }
 
     @PostMapping("/registration")
@@ -75,6 +50,20 @@ public class UserController {
         }
         return "redirect:/login";
     }
+    @GetMapping("/activate/{code}")
+    public String activate (Model model, @PathVariable String code){
+        boolean isActivated = userService.activateUser(code);
+        if (isActivated){
+            model.addAttribute("messageActivatedCode",
+                    "User successfully activated");
+        } else {
+            model.addAttribute("messageActivatedCode",
+                    "Activation code is not found");
+        }
+        return "login";
+    }
+
+
 
     @GetMapping("/user/{id}")
     public String userInfo(@PathVariable("id") Long id, Model model) {

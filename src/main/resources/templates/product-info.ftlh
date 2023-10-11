@@ -4,9 +4,7 @@
     <title>BUYSELL</title>
 </head>
 <body>
-<h1> BUYSELL </h1>
-<a href="http://localhost:8080/product/products"> Вернуться на главную страницу </a>
-<hr>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
 <#if productException??>
     <b>Omg... ${productException}</b>
     <#else >
@@ -30,11 +28,11 @@
             </#list>
             <br>
             <#if user.id==productUserId>
-                <a href="/product/${product.id}/product-edit"> Редактировать </a>
+                <a href="/products/${product.id}/product-edit"> Редактировать </a>
                 <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                 <br>
                 <br>
-                <form action="/product/delete/${product.id}" method="post">
+                <form action="/products/delete/${product.id}" method="post">
                     <input type="hidden" name="_csrf" value="${_csrf.token}">
                     <input type="submit" value="Удалить товар"/>
                 </form>
