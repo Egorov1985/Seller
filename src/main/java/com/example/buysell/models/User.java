@@ -4,6 +4,7 @@ import com.example.buysell.Annotation.Phone;
 import com.example.buysell.models.enums.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -39,7 +40,7 @@ public class User implements UserDetails {
     private boolean active;
 
     @Column(name = "password", length = 1000)
-    @NotEmpty(message = "Пароль не может быть пустым")
+    @Length(min = 6, max = 16, message = "Пароль содержать не менее 6 символов и не более 16")
     private String password;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

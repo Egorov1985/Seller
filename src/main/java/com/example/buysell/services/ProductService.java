@@ -29,7 +29,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    public List<Product> allProduct(){
+    public List<Product> allProduct() {
         return productRepository.findAll();
     }
 
@@ -161,9 +161,11 @@ public class ProductService {
 
     //Удалем все фотографии товара
     public void deleteImagesOfProduct(Product product) throws IOException {
-        FileUtils.deleteDirectory(new File(product.getImagesPathList().get(0)).getParentFile());
-        product.getImagesPathList().clear();
-        product.setPreviewImage(null);
+        if (!product.getImagesPathList().isEmpty()) {
+            FileUtils.deleteDirectory(new File(product.getImagesPathList().get(0)).getParentFile());
+            product.getImagesPathList().clear();
+            product.setPreviewImage(null);
+        }
     }
 
 }

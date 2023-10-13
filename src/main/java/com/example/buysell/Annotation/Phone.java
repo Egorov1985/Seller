@@ -11,7 +11,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME ) //позволяет указать жизненный цикл аннотации: будет она присутствовать только в исходном коде,
                                      // в скомпилированном файле, или она будет также видна и в процессе выполнения.
 public @interface Phone {
-    String message () default "{Phone}";
+
+    String message () default "{doesn't seem to be valid phone number}";
     Class<?> [] groups () default {};
     Class<? extends Payload> [] payload() default {} ;
+
 }

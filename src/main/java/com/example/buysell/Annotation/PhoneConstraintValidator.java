@@ -8,6 +8,7 @@ public class PhoneConstraintValidator implements ConstraintValidator<Phone, Stri
     public boolean isValid(String phoneField, ConstraintValidatorContext cxt) {
         if (phoneField == null)
             return false;
-        return phoneField.matches("[0-9()-\\.]*");
+        return (phoneField.matches("[0-9()-\\.]*") && phoneField.length()>=10) ||
+                (phoneField.matches("[0-9()-\\.]*") && phoneField.length()==11) ;
     }
 }
