@@ -25,11 +25,10 @@
         <input type="submit" value="Поиск"/>
     </form>
 
-
     <#list products as product>
         <div>
             <#if product.getPreviewImage()??>
-                <p><img src="/product/${product.id}/previewImage" height="60px"/> ${product.title}  ${product.price}
+                <p><img src="/products/${product.id}/previewImage" height="60px"/> ${product.title}  ${product.price}
                     руб.
                     | <a href="/products/${product.id}">Подробнее...</a></p><br>
             <#else >

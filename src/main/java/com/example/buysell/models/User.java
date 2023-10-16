@@ -40,7 +40,7 @@ public class User implements UserDetails {
     private boolean active;
 
     @Column(name = "password", length = 1000)
-    @Length(min = 6, max = 16, message = "Пароль содержать не менее 6 символов и не более 16")
+    @Length(min = 6, message = "Пароль содержать не менее 6 символов")
     private String password;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

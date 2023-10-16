@@ -20,7 +20,7 @@ import java.nio.file.Paths;
 @AllArgsConstructor
 public class ImageController {
 
-    @GetMapping("/product/{product}/image/{id}")
+    @GetMapping("/products/{product}/image/{id}")
     private ResponseEntity<?> imageProduct(@PathVariable Product product,
                                            @PathVariable Long id) throws IOException {
         Path path = Paths.get(product.getImagesPathList().get(Math.toIntExact(id)));
@@ -31,7 +31,7 @@ public class ImageController {
                 .contentLength(result.length)
                 .body(new InputStreamResource(new ByteArrayInputStream(result)));
     }
-    @GetMapping("/product/{product}/previewImage")
+    @GetMapping("/products/{product}/previewImage")
     private ResponseEntity<?> previewImage (@PathVariable Product product) throws IOException {
         byte[] result = product.getPreviewImage();
         return ResponseEntity.ok().header("previewImage")
