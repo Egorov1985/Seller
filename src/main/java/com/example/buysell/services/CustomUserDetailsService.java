@@ -1,7 +1,6 @@
 package com.example.buysell.services;
 
 
-import com.example.buysell.exception.userException.UserActiveBannedException;
 import com.example.buysell.models.User;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -25,7 +25,10 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION,
                     exception.getMessage());
         }
+
+
         if (exception.getMessage().equalsIgnoreCase("Bad credentials")){
+            response.sendRedirect("/login?error");
             setDefaultFailureUrl("/login?error");
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION,
                     exception.getMessage());

@@ -2,12 +2,10 @@ package com.example.buysell.controllers;
 
 import com.example.buysell.models.Product;
 import com.example.buysell.services.ProductService;
-import com.example.buysell.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 import java.util.List;

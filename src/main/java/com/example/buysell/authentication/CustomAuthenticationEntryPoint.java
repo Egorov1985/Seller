@@ -17,11 +17,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
+        
         if (session != null) {
             String redirectUrl = request.getRequestURI();
             request.getSession().setAttribute("SESSION_REDIRECT_URL", redirectUrl);
-            response.sendRedirect("/login");
+            response.sendRedirect("/login?error");
         }
     }
 }

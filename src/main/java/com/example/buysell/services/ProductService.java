@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -49,6 +50,7 @@ public class ProductService {
     }
 
     // Сохранение товара в Базу Данных
+    @Transactional
     public void saveProduct(Principal principal, Product product,
                             MultipartFile[] file) throws IOException {
         product.setUser(getUserByPrincipal(principal));
@@ -93,7 +95,9 @@ public class ProductService {
         return userRepository.findByEmail(principal.getName());
     }
 
+
     //Удаление товара из базы
+    @Transactional
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
     }
@@ -109,6 +113,7 @@ public class ProductService {
 
 
     //Редактирование товара
+    @Transactional
     public void updateProduct(Long id, Principal principal, Product product,
                               MultipartFile[] file) throws IOException {
         Product productFromDB = getProductById(id);
@@ -160,6 +165,7 @@ public class ProductService {
 
 
     //Удалем все фотографии товара
+    @Transactional
     public void deleteImagesOfProduct(Product product) throws IOException {
         if (!product.getImagesPathList().isEmpty()) {
             FileUtils.deleteDirectory(new File(product.getImagesPathList().get(0)).getParentFile());

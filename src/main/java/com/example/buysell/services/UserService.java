@@ -7,17 +7,11 @@ import com.example.buysell.models.enums.Role;
 import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -63,6 +57,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public void banUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
         if (user != null) {
@@ -80,6 +75,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public void changeUserRoles(User user, Map<String, String> form) {
         Set<String> roles = Arrays.stream(Role.values()).map(Role::name)
                 .collect(Collectors.toSet());
@@ -93,22 +89,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String userLoginFailed(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            AuthenticationException authenticationException = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
-            if (authenticationException != null) {
-                if (authenticationException instanceof BadCredentialsException) {
-                    return "Неверный логин или пароль";
-                }
-                if (authenticationException instanceof LockedException) {
-                    return "Пользователь заблокирован, обратитесь к администрации сайта";
-                }
-            }
-        }
-        return "Введите логин и пароль";
-    }
-
+    @Transactional
     public boolean activateUser(String code) {
         User user = userRepository.findByActivateCode(code);
         if (user == null)
