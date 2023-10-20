@@ -8,6 +8,8 @@ import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.hibernate.type.ImageType;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -60,22 +62,7 @@ public class ProductService {
         Path path = Paths.get("C:" + File.separator + "photo" + File.separator
                 + principal.getName() + File.separator + product.getTitle() + "-" + UUID.randomUUID());
         File imageFile = null;
-        for (MultipartFile f : file) {
-            try {
-                if (f.getSize() > 0) {
-                    image = ImageIO.read(f.getInputStream());
-                    imageFile = new File(path + File.separator + f.getOriginalFilename().substring(0,
-                            f.getOriginalFilename().lastIndexOf('.')) + ".png");
-                    if (!imageFile.getParentFile().exists()) {
-                        Files.createDirectories(path);
-                    }
-                    ImageIO.write(image, "png", imageFile);
-                    pathToImage.add(imageFile.getAbsolutePath());
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        saveImageToDisk(file, pathToImage, path);
         product.setImagesPathList(pathToImage);
         if (!pathToImage.isEmpty()) {
             try (FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
@@ -134,22 +121,7 @@ public class ProductService {
                 path = Path.of(new File(pathToImage.get(0)).getParent());
             }
 
-            for (MultipartFile f : file) {
-                try {
-                    if (f.getSize() > 0) {
-                        image = ImageIO.read(f.getInputStream());
-                        imageFile = new File(path + File.separator + f.getOriginalFilename().substring(0,
-                                f.getOriginalFilename().lastIndexOf('.')) + ".png");
-                        if (!imageFile.getParentFile().exists()) {
-                            Files.createDirectories(path);
-                        }
-                        ImageIO.write(image, "png", imageFile);
-                        pathToImage.add(imageFile.getAbsolutePath());
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            saveImageToDisk(file, pathToImage, path);
             System.gc();
         }
         if (product.getPreviewImage() == null && !pathToImage.isEmpty()) {
@@ -171,6 +143,30 @@ public class ProductService {
             FileUtils.deleteDirectory(new File(product.getImagesPathList().get(0)).getParentFile());
             product.getImagesPathList().clear();
             product.setPreviewImage(null);
+        }
+    }
+
+    private void saveImageToDisk(MultipartFile[] file, List<String> pathToImage, Path path) {
+        BufferedImage image;
+        File imageFile;
+        for (MultipartFile f : file) {
+            try {
+                if (f.getSize() > 0 && (f.getContentType().equals(MediaType.IMAGE_JPEG_VALUE) ||
+                        f.getContentType().equals(MediaType.IMAGE_PNG_VALUE))) {
+                    image = ImageIO.read(f.getInputStream());
+                    imageFile = new File(path + File.separator + f.getOriginalFilename().substring(0,
+                            f.getOriginalFilename().lastIndexOf('.')) + ".png");
+                    if (!imageFile.getParentFile().exists()) {
+                        Files.createDirectories(path);
+                    }
+                    ImageIO.write(image, "png", imageFile);
+                    pathToImage.add(imageFile.getAbsolutePath());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (IllegalArgumentException e){
+                log.info(e.getMessage());
+            }
         }
     }
 

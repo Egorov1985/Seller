@@ -18,7 +18,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException {
 
-        HttpSession session = request.getSession(true);
+        HttpSession session = request.getSession();
         String redirectUrl = (String) session.getAttribute("SESSION_REDIRECT_URL");
 
         if (redirectUrl==null || redirectUrl.startsWith("/error")){

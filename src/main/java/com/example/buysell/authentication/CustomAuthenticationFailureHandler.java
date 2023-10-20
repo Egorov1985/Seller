@@ -1,9 +1,12 @@
 package com.example.buysell.authentication;
 
+import com.example.buysell.services.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -12,12 +15,14 @@ import java.io.IOException;
 
 @Component
 public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request,
                                         HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
 
         super.onAuthenticationFailure(request, response, exception);
+        System.out.println(exception.getMessage());
 
         if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
            setDefaultFailureUrl("/login?error_account_not_activated=true&&username=" +
@@ -26,12 +31,11 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
                     exception.getMessage());
         }
 
-
         if (exception.getMessage().equalsIgnoreCase("Bad credentials")){
-            response.sendRedirect("/login?error");
             setDefaultFailureUrl("/login?error");
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION,
                     exception.getMessage());
         }
+        //response.sendRedirect("/login?error");
     }
 }
