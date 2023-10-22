@@ -33,12 +33,12 @@ public class Product {
     @Column(name = "description", columnDefinition = "text")
     @NotEmpty(message = "Введите описание товара")
     @Size(min = 3, max = 30, message =
-            "Введите описание товара, не менее 3 символов и не более 30 символов")
+            "Введите описание товара, не менее 3 символов и не более 1000 символов")
     private String description;
 
     @Column(name = "price")
-    @Min(value = 0, message = "Цена должна быть больше нуля")
-    private Long price;
+    @NotEmpty (message = "Укажите цену")
+    private String price;
 
     @Column(name = "city")
     @NotEmpty(message = "Введите город")

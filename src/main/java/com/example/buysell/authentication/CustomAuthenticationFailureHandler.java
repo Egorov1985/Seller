@@ -22,7 +22,6 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
                                         AuthenticationException exception) throws IOException, ServletException {
 
         super.onAuthenticationFailure(request, response, exception);
-        System.out.println(exception.getMessage());
 
         if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
            setDefaultFailureUrl("/login?error_account_not_activated=true&&username=" +
@@ -36,6 +35,5 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
             request.getSession().setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION,
                     exception.getMessage());
         }
-        //response.sendRedirect("/login?error");
     }
 }

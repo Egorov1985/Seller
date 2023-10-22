@@ -23,19 +23,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
 
-        HttpSession session = request.getSession();
-        System.out.println(authException.getMessage());
+        HttpSession session = request.getSession(false);
 
         if (session != null) {
             String redirectUrl = request.getRequestURI();
             request.getSession().setAttribute("SESSION_REDIRECT_URL", redirectUrl);
-            if (!detailsService.loadUserByUsername(request.getParameter("username")).isEnabled() &&
-            detailsService.loadUserByUsername(request.getParameter("username"))!=null) {
-                response.sendRedirect("/login?error_account_not_activated=true&&username=" +
-                        request.getParameter("username"));
-                request.setAttribute(WebAttributes.AUTHENTICATION_EXCEPTION, "Error authentication.");
-            } else
-                response.sendRedirect("/login?error");
+            response.sendRedirect("/login?error");
         }
     }
 }

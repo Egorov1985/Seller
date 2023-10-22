@@ -40,7 +40,7 @@ public class ImageController {
                 .body(new InputStreamResource(new ByteArrayInputStream(result)));
     }
 
-    @GetMapping("/product/defaultImage")
+    @GetMapping("/products/defaultImage")
     private ResponseEntity<?> getDefaultImage() throws IOException {
         Path path = Paths.get("src/main/resources/static/images/noImage.png");
         byte[] result = Files.readAllBytes(path);

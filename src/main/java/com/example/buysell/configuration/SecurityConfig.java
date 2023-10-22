@@ -1,4 +1,4 @@
-package com.example.buysell.configurations;
+package com.example.buysell.configuration;
 
 import com.example.buysell.authentication.CustomAuthenticationEntryPoint;
 import com.example.buysell.authentication.CustomAuthenticationFailureHandler;

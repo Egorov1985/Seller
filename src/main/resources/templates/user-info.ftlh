@@ -14,10 +14,10 @@
         <h4>Товары пользователя: </h4>
         <#list products as product>
             <#if product.previewImage??>
-                <p><img src="/product/${product.id}/previewImage" height="50px"/> ${product.title}  ${product.price} руб.
+                <p><img src="/products/${product.id}/previewImage" height="50px"/> ${product.title}  ${product.price} руб.
                     | <a href="/products/${product.id}">Подробнее...</a></p><br>
             <#else >
-                <p><img src="/product/defaultImage"/> ${product.title}  ${product.price} руб.
+                <p><img src="/products/defaultImage"/> ${product.title}  ${product.price} руб.
                     | <a href="/products/${product.id}">Подробнее...</a></p><br>
             </#if>
         <#else >

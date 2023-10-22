@@ -165,7 +165,7 @@ public class ProductService {
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (IllegalArgumentException e){
-                log.info(e.getMessage());
+                throw new IllegalArgumentException("Не поддерживаемый файл");
             }
         }
     }

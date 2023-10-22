@@ -16,10 +16,17 @@
     <input type="submit" value="Вход"/>
 </form>
 <br>
-<div <#if errorActivation??>
-    <b style="color: red">${errorActivation}</b>
+<div>
+<#if messageActivatedCode??>
+    <b style="color: green">${messageActivatedCode}</b>
     <br><br>
 </#if>
+</div>
+<div>
+    <#if errorActivation??>
+        <b style="color: red">${errorActivation}</b>
+        <br><br>
+    </#if>
 </div>
 <a href="/registration">Зарегистрироваться</a>
 </body>

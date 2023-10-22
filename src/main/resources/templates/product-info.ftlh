@@ -24,14 +24,10 @@
     <#if user.email??>
         <b> Имя: </b> <a href="/user/${product.user.id}"> ${product.getUser().name} </a> <br>
         <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br><br>
-        <br><br>
-
-        <br>
         <#if user.id==productUserId>
-            <a href="/products/${product.id}/product-edit"> Редактировать </a>
+            <a href="/products/${product.id}/product-edit"> Редактировать информацию о товаре </a>
             <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-            <br>
-            <br>
+            <br><br>
             <form action="/products/delete/${product.id}" method="post">
                 <input type="hidden" name="_csrf" value="${_csrf.token}">
                 <input type="submit" value="Удалить товар"/>

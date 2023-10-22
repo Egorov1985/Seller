@@ -4,8 +4,9 @@
     <title>BUYSELL</title>
 </head>
 <body>
-<h1><a href="http://localhost:8080">BUYSELL</a></h1><hr>
-<#if user.email??>
+<h1><a href="http://localhost:8080">BUYSELL</a></h1>
+<hr>
+<#if user??>
 <h3 Имя пользователя> ${user.name}</h3>
 <form action="/logout" method="post">
     <input type="hidden" name="_csrf" value="${_csrf.token}">
@@ -39,7 +40,7 @@
     <#else>
         <h3>Товаров нет </h3>
     </#list>
-    <#if user.email??>
+    <#if user??>
         <a href="/products/new"> Создать новое объявление </a>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     </#if>

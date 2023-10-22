@@ -20,7 +20,9 @@ public class MainController {
     public String products(Model model, Principal principal) {
         List<Product> productList = productService.allProduct();
         model.addAttribute("products", productList);
-        model.addAttribute("user", productService.getUserByPrincipal(principal));
+        if (principal!=null) {
+            model.addAttribute("user", productService.getUserByPrincipal(principal));
+        }
         return "products";
     }
 }

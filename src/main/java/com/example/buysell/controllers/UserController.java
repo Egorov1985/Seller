@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
 
@@ -23,10 +24,10 @@ public class UserController {
     @GetMapping("/login")
     public String login(@RequestParam(value = "error_account_not_activated",
             required = false) boolean error, @RequestParam(value = "username", required = false) String username,
-                        Model model) {
+                        Model model, HttpServletRequest request) {
         if (error)
             model.addAttribute("errorActivation",
-                    "The account with email " +username +" is not activated");
+                    "The account with email " +username +" is not activated.");
         return "/login";
     }
 
@@ -44,22 +45,24 @@ public class UserController {
         }
         if (!userService.createUser(user)) {
             model.addAttribute("errorMessage",
-                    "Пользователь с email: " + user.getEmail() + " уже существует");
+                    "Пользователь с email: " + user.getEmail() + " уже существует.");
             return "registration";
         }
         return "redirect:/login";
     }
+
     @GetMapping("/activate/{code}")
-    public String activate (Model model, @PathVariable String code){
+    public String activate (@PathVariable String code, Model model, HttpServletRequest request){
         boolean isActivated = userService.activateUser(code);
         if (isActivated){
             model.addAttribute("messageActivatedCode",
-                    "User successfully activated");
+                    "User successfully activated.");
+            request.getSession().setAttribute("SESSION_REDIRECT_URL", null);
         } else {
             model.addAttribute("messageActivatedCode",
-                    "Activation code is not found");
+                    "Account activation has already been completed!");
         }
-        return "login";
+        return "/login";
     }
 
 

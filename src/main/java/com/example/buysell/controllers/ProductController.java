@@ -50,11 +50,20 @@ public class ProductController {
 
     @PostMapping("/create")
     public String createProduct(@RequestParam(value = "file") MultipartFile[] file,
-                                @ModelAttribute @Valid Product product,
-                                BindingResult bindingResult, Principal principal) throws IOException {
-        if (bindingResult.hasErrors())
-            return "new-product";
-        productService.saveProduct(principal, product, file);
+                                @Valid @ModelAttribute Product product,
+                                BindingResult bindingResult, Model model, Principal principal) throws IOException {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("product", product);
+            return "/new-product";
+        }
+        try {
+            productService.saveProduct(principal, product, file);
+        } catch (IllegalArgumentException exception) {
+            model.addAttribute("imageAddError", exception.getMessage());
+            model.addAttribute("product", product);
+            return "/new-product";
+        }
+
         return "redirect:/";
     }
 

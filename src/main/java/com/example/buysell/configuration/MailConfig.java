@@ -1,4 +1,4 @@
-package com.example.buysell.configurations;
+package com.example.buysell.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
