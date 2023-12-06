@@ -61,6 +61,7 @@ public class UserController {
         } else {
             model.addAttribute("messageActivatedCode",
                     "Account activation has already been completed!");
+            request.getSession().setAttribute("SESSION_REDIRECT_URL", "http://localhost:8080/products");
         }
         return "/login";
     }

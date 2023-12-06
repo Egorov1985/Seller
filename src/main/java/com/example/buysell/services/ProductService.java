@@ -1,5 +1,6 @@
 package com.example.buysell.services;
 
+import com.example.buysell.dto.ProductDto;
 import com.example.buysell.exception.productException.ProductNotFoundException;
 import com.example.buysell.models.Product;
 import com.example.buysell.models.User;
@@ -8,7 +9,6 @@ import com.example.buysell.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
-import org.hibernate.type.ImageType;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -32,12 +33,12 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
+
     public List<Product> allProduct() {
         return productRepository.findAll();
     }
 
-
-    //Возвращаем весь список товаров, если задан поиск, то возвращает искомые товары
+    //Возвращаем весь список товаров, если же задан поиск, то возвращает искомые товары
     public List<Product> filteredProductList(String title) {
         List<Product> productList = productRepository.findAll();
         if (title != null) {
@@ -53,33 +54,37 @@ public class ProductService {
 
     // Сохранение товара в Базу Данных
     @Transactional
-    public void saveProduct(Principal principal, Product product,
+    public void saveProduct(Principal principal, ProductDto productDto,
                             MultipartFile[] file) throws IOException {
-        product.setUser(getUserByPrincipal(principal));
-        BufferedImage image = null;
-        List<String> pathToImage = new ArrayList<>();
 
-        Path path = Paths.get("C:" + File.separator + "photo" + File.separator
-                + principal.getName() + File.separator + product.getTitle() + "-" + UUID.randomUUID());
-        File imageFile = null;
-        saveImageToDisk(file, pathToImage, path);
-        product.setImagesPathList(pathToImage);
-        if (!pathToImage.isEmpty()) {
-            try (FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
-                product.setPreviewImage(fileInputStream.readAllBytes());
+        Product product = new Product();
+        product.setUser(getUserByPrincipal(principal));
+        extractFromDtoToEntity(productDto, product);
+
+        if (file[0].getSize() > 0) {
+            List<String> pathToImage = new ArrayList<>();
+            Path path = Paths.get("C:" + File.separator + "photo" + File.separator
+                    + principal.getName() + File.separator + product.getTitle() + "-" + UUID.randomUUID());
+            saveImageToDisk(file, pathToImage, path);
+            product.setImagesPathList(pathToImage);
+
+            if (!pathToImage.isEmpty()) {
+                try (FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
+                    product.setPreviewImage(fileInputStream.readAllBytes());
+                }
             }
+            System.gc(); // без этого вылетает ошибка о том, что томкат не модет удалить temp
         }
-        System.gc();// без этого вылетает ошибка о том, что томкат не модет удалить temp
+
+        productRepository.save(product);
         log.info("Saving Product: Title: {}; Author email: {}",
                 product.getTitle(), product.getUser().getEmail());
-        product.setDateOfCreated(new Date());
-        productRepository.save(product);
     }
 
     public User getUserByPrincipal(Principal principal) {
-        if (principal == null)
-            return new User();
-        return userRepository.findByEmail(principal.getName());
+      if (principal==null)
+           return new User();
+       return userRepository.findByEmail(principal.getName());
     }
 
 
@@ -92,47 +97,43 @@ public class ProductService {
 
     // Находим товар по ID и возвращаем его
     public Product getProductById(Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        if (product.isEmpty())
-            throw new ProductNotFoundException("Product not found");
-        return product.get();
+        return productRepository.findById(id).orElseThrow(()-> 
+                new ProductNotFoundException("Product not found"));
     }
 
 
     //Редактирование товара
     @Transactional
-    public void updateProduct(Long id, Principal principal, Product product,
+    public void updateProduct(Long id, Principal principal, ProductDto productDto,
                               MultipartFile[] file) throws IOException {
         Product productFromDB = getProductById(id);
-        product.setUser(getUserByPrincipal(principal));
         List<String> pathToImage = productFromDB.getImagesPathList();
-        product.setImagesPathList(pathToImage);
-
 
         if (file[0].getSize() > 0) {
-            Path path = null;
-            File imageFile = null;
-            BufferedImage image = null;
+            Path path;
             if (pathToImage.isEmpty()) {
                 path = Paths.get("C:" + File.separator + "photo" + File.separator
-                        + principal.getName() + File.separator + product.getTitle() +
+                        + principal.getName() + File.separator + productDto.getTitle() +
                         "-" + UUID.randomUUID());
             } else {
                 path = Path.of(new File(pathToImage.get(0)).getParent());
             }
-
             saveImageToDisk(file, pathToImage, path);
             System.gc();
         }
-        if (product.getPreviewImage() == null && !pathToImage.isEmpty()) {
+
+        if (productFromDB.getPreviewImage() == null && !pathToImage.isEmpty()) {
             try (FileInputStream fileInputStream = new FileInputStream(pathToImage.get(0))) {
-                product.setPreviewImage(fileInputStream.readAllBytes());
+                productFromDB.setPreviewImage(fileInputStream.readAllBytes());
             }
         }
+
+        extractFromDtoToEntity(productDto, productFromDB);
+
+        productRepository.save(productFromDB);
         log.info("Update Product: Title: {}; Author email: {}",
-                product.getTitle(), product.getUser().getEmail());
-        product.setDateOfCreated(new Date());
-        productRepository.save(product);
+                productFromDB.getTitle(), productFromDB.getUser().getEmail());
+
     }
 
 
@@ -168,6 +169,14 @@ public class ProductService {
                 throw new IllegalArgumentException("Не поддерживаемый файл");
             }
         }
+    }
+
+    private static void extractFromDtoToEntity(ProductDto productDto, Product productEntity) {
+        productEntity.setDescription(productDto.getDescription());
+        productEntity.setPrice(productDto.getPrice());
+        productEntity.setCity(productDto.getCity());
+        productEntity.setTitle(productDto.getTitle());
+        productEntity.setDateOfCreated(LocalDateTime.now());
     }
 
 }

@@ -1,0 +1,1 @@
+ALTER TABLE Product MODIFY price varchar(255) NOT NULL;

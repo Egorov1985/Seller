@@ -1,7 +1,9 @@
 package com.example.buysell.controllers;
 
+import com.example.buysell.dto.ProductDto;
 import com.example.buysell.exception.productException.ProductNotFoundException;
 import com.example.buysell.models.Product;
+import com.example.buysell.models.User;
 import com.example.buysell.services.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -50,17 +52,17 @@ public class ProductController {
 
     @PostMapping("/create")
     public String createProduct(@RequestParam(value = "file") MultipartFile[] file,
-                                @Valid @ModelAttribute Product product,
+                                @Valid @ModelAttribute ProductDto productDto,
                                 BindingResult bindingResult, Model model, Principal principal) throws IOException {
         if (bindingResult.hasErrors()) {
-            model.addAttribute("product", product);
+            model.addAttribute("product", productDto);
             return "/new-product";
         }
         try {
-            productService.saveProduct(principal, product, file);
+            productService.saveProduct(principal, productDto, file);
         } catch (IllegalArgumentException exception) {
             model.addAttribute("imageAddError", exception.getMessage());
-            model.addAttribute("product", product);
+            model.addAttribute("product", productDto);
             return "/new-product";
         }
 
@@ -93,9 +95,10 @@ public class ProductController {
 
 
     @PostMapping("/{id}/update")
-    public String updateProduct(@RequestParam(value = "file", required = false) MultipartFile[] file, @ModelAttribute @Valid Product product,
+    public String updateProduct(@RequestParam(value = "file", required = false) MultipartFile[] file,
+                                @ModelAttribute @Valid ProductDto productDto,
                                 @PathVariable Long id, Principal principal) throws IOException {
-        productService.updateProduct(id, principal, product, file);
+        productService.updateProduct(id, principal, productDto, file);
         return "redirect:/products/{id}";
     }
 

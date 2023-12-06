@@ -24,10 +24,11 @@
 <form action="/products/${product.id}/update" method="post" enctype="multipart/form-data">
     Название объявления: <input type="text" name="title" value="${product.title}" required/> <br><br>
     Описание объявления: <input type="text" name="description" value="${product.description}" required/><br><br>
-    Цена: <input type="text" name="price" value="${product.price}" required/><br><br>
+    Цена: <input type="text" name="price" value="${product.price}" руб. required/><br><br>
     Город: <input type="text" name="city" value="${product.city}" required/><br><br>
     <p>Добавить фотографии товара</p>
     <p><input type="file" name="file" multiple accept="image/*,image/jpeg"/></p> <br>
+    <input type="hidden" name="id" value="${product.id}">
     <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     <input type="submit" value="Сохранить изменения"/>
 </form>

@@ -23,6 +23,7 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
 
         super.onAuthenticationFailure(request, response, exception);
 
+
         if (exception.getMessage().equalsIgnoreCase("User is disabled")) {
            setDefaultFailureUrl("/login?error_account_not_activated=true&&username=" +
                     request.getParameter("username"));

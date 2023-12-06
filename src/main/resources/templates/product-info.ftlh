@@ -11,7 +11,7 @@
 <#else >
     <h4> Подробная информация о товаре </h4>
     <#list images as img>
-        <img src="/products/${product.id}/image/${img_index}" height="120px"/>
+        <img src="/products/${product.id}/image/${img_index}" height="120px" alt=""/>
     <#else >
         <h3> Фотографий нет </h3>
     </#list>
@@ -21,7 +21,7 @@
     <b> Цена: </b>${product.price} руб.<br>
     <b> Город: </b>${product.city}<br>
 
-    <#if user.email??>
+    <#if user.name??>
         <b> Имя: </b> <a href="/user/${product.user.id}"> ${product.getUser().name} </a> <br>
         <b> Номер телефона: </b>${product.user.getPhoneNumber()}<br><br>
         <#if user.id==productUserId>

@@ -6,7 +6,7 @@
 <body>
 <h1><a href="http://localhost:8080">BUYSELL</a></h1>
 <hr>
-<#if user??>
+<#if user.email??>
 <h3 Имя пользователя> ${user.name}</h3>
 <form action="/logout" method="post">
     <input type="hidden" name="_csrf" value="${_csrf.token}">
@@ -33,7 +33,7 @@
                     руб.
                     | <a href="/products/${product.id}">Подробнее...</a></p><br>
             <#else >
-                <p><img src="/product/defaultImage"/> ${product.title}  ${product.price} руб.
+                <p><img src="/products/defaultImage"/> ${product.title}  ${product.price} руб.
                     | <a href="/products/${product.id}">Подробнее...</a></p><br>
             </#if>
         </div>
