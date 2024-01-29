@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>BUYSELL</title>
+    <script src="/static/public/js/product-edit.js"></script>
 </head>
 <body>
 <h1><a href="http://localhost:8080">BUYSELL</a></h1>
@@ -23,7 +24,10 @@
 </#if>
 <form action="/products/${product.id}/update" method="post" enctype="multipart/form-data">
     Название объявления: <input type="text" name="title" value="${product.title}" required/> <br><br>
-    Описание объявления: <input type="text" name="description" value="${product.description}" required/><br><br>
+    <div>
+        Описание объявления:
+        <input type="text" class="input" name="description" value="${product.description}" required/><br><br>
+    </div>
     Цена: <input type="text" name="price" value="${product.price}" руб. required/><br><br>
     Город: <input type="text" name="city" value="${product.city}" required/><br><br>
     <p>Добавить фотографии товара</p>

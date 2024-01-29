@@ -38,7 +38,7 @@ public class Product {
 
     @Column(name = "description", columnDefinition = "text")
     @NotEmpty(message = "Введите описание товара")
-    @Size(min = 3, max = 30, message =
+    @Size(min = 3, max = 1000, message =
             "Введите описание товара, не менее 3 символов и не более 1000 символов")
     private String description;
 

@@ -1,6 +1,5 @@
 package com.example.buysell.authentication;
 
-import com.example.buysell.services.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -15,7 +14,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
-    private final CustomUserDetailsService detailsService;
+
 
     @Override
     public void commence(HttpServletRequest request,
