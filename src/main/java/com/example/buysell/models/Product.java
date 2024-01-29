@@ -16,6 +16,14 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 public class Product {
+    public Product(String title, String description, String price, String city, User user, LocalDateTime dateOfCreated) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.city = city;
+        this.user = user;
+        this.dateOfCreated = dateOfCreated;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

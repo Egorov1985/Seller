@@ -2,6 +2,7 @@ package com.example.buysell.models;
 
 import com.example.buysell.Annotation.Phone;
 import com.example.buysell.models.enums.Role;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
@@ -21,7 +22,15 @@ import java.util.*;
 @NoArgsConstructor
 @ToString
 public class User implements UserDetails, Serializable {
-    private static final long serialVersionUID = -4085257678870319490L;
+
+    public User(String email, String phoneNumber, String name, boolean active, String password, Set<Role> roles) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.name = name;
+        this.active = active;
+        this.password = password;
+        this.roles = roles;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
