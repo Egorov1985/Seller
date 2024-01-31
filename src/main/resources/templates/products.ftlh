@@ -40,7 +40,7 @@
     <#else>
         <h3>Товаров нет </h3>
     </#list>
-    <#if user??>
+    <#if user.email??>
         <a href="/products/new"> Создать новое объявление </a>
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
     </#if>
