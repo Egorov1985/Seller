@@ -21,30 +21,22 @@ CREATE TABLE buysell.product
     price           varchar(255) NOT NULL,
     title           VARCHAR(50)  NOT NULL,
     user_id         BIGINT       NOT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) references user(id)
 );
 
 CREATE TABLE buysell.product_images_path_list
 (
     product_id       BIGINT       NOT NULL,
-    images_path_list VARCHAR(255) NULL
+    images_path_list VARCHAR(255) NULL,
+    FOREIGN KEY (product_id) references product(id)
 );
 
 CREATE TABLE buysell.user_role
 (
     user_id BIGINT       NOT NULL null,
-    roles   VARCHAR(255) NULL
+    roles   VARCHAR(255) NULL,
+    FOREIGN KEY (user_id) REFERENCES user(id)
 );
 
-alter table product
-    add constraint product_user_id
-        foreign key (user_id) references buysell.user (id);
-
-alter table user_role
-    add constraint user_role_user_id
-        foreign key (user_id) references user (id);
-
-alter table product_images_path_list
-    add constraint product_images_path_list_product_id
-        foreign key (product_id) references product (id);
 
